@@ -1,4 +1,184 @@
 <!doctype html>
 <html lang="en">
-  <body>Hello World</body>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>WebRTC for the Streamer</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        line-height: 1.5;
+      }
+
+      main {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 24px;
+      }
+
+      .cards {
+        display: grid;
+        gap: 12px;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      }
+
+      .card {
+        display: block;
+        padding: 16px;
+        border: 1px solid #cccccc;
+        border-radius: 8px;
+        color: inherit;
+        text-decoration: none;
+        background: #f7f7f7;
+      }
+
+      .card:hover,
+      .card:focus {
+        background: #efefef;
+      }
+
+      .card h3 {
+        margin: 0 0 8px;
+      }
+
+      .card p {
+        margin: 0;
+      }
+
+      section {
+        margin-top: 24px;
+      }
+
+      #details {
+        padding: 20px;
+        border: 1px solid #cccccc;
+        border-radius: 8px;
+      }
+
+      #details h2 {
+        margin-top: 0;
+      }
+
+      #details article + article {
+        margin-top: 24px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>WebRTC for the Streamer</h1>
+      <p>
+        <i>WebRTC for the Streamer</i> was written by the developers who added
+        <a href="https://obsproject.com/kb/whip-streaming-guide">WHIP/WebRTC support to OBS</a>
+        and maintain
+        <a href="https://github.com/glimesh/broadcast-box">Broadcast Box</a>.
+        We hope WHIP and WebRTC make streaming more accessible and more
+        connected. All of this work is non-profit and open source.
+      </p>
+      <p>
+        This site is a companion piece to
+        <a href="https://webrtcforthecurious.com">WebRTC for the Curious</a>
+        and
+        <a href="https://github.com/pion">Pion</a>.
+      </p>
+
+      <section aria-label="Example cards">
+        <div class="cards">
+          <a class="card" href="#lorem-ipsum-example">
+            <h3>Lorem Ipsum Example</h3>
+            <p>A placeholder summary card you can replace with a real topic.</p>
+          </a>
+
+          <a class="card" href="#dolor-sit-amet">
+            <h3>Dolor Sit Amet</h3>
+            <p>Another placeholder summary for a future section.</p>
+          </a>
+
+          <a class="card" href="#consectetur-example">
+            <h3>Consectetur Example</h3>
+            <p>A sample card showing how another topic can fit here.</p>
+          </a>
+
+          <a class="card" href="#adipiscing-placeholder">
+            <h3>Adipiscing Placeholder</h3>
+            <p>A third placeholder card you can swap with real content.</p>
+          </a>
+        </div>
+      </section>
+
+      <section id="details">
+        <article id="lorem-ipsum-example">
+          <h2>Lorem Ipsum Example</h2>
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
+            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+            aliquip ex ea commodo consequat. Duis aute irure dolor in
+            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+            pariatur.
+          </p>
+          <p>
+            Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
+            officia deserunt mollit anim id est laborum. Integer nec odio.
+            Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis
+            sem at nibh elementum imperdiet. Duis sagittis ipsum, sed cursus
+            ante dapibus diam facilisis in.
+          </p>
+        </article>
+
+        <article id="dolor-sit-amet">
+          <h2>Dolor Sit Amet</h2>
+          <p>
+            Duis aute irure dolor in reprehenderit in voluptate velit esse
+            cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
+            cupidatat non proident, sunt in culpa qui officia deserunt mollit
+            anim id est laborum. Curabitur sodales ligula in libero. Sed
+            dignissim lacinia nunc. Curabitur tortor. Pellentesque nibh.
+          </p>
+          <p>
+            Aenean quam. In scelerisque sem at dolor. Maecenas mattis. Sed
+            convallis tristique sem. Proin ut ligula vel nunc egestas porttitor.
+            Morbi lectus risus, iaculis vel, suscipit quis, luctus non, massa.
+            Fusce ac turpis quis ligula lacinia aliquet. Mauris ipsum.
+          </p>
+        </article>
+
+        <article id="consectetur-example">
+          <h2>Consectetur Example</h2>
+          <p>
+            Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed
+            nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis
+            ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta.
+            Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent
+            taciti sociosqu ad litora torquent per conubia nostra.
+          </p>
+          <p>
+            In consectetur, elit nec tristique finibus, justo risus fermentum
+            odio, a efficitur purus lacus sed velit. Donec vitae sapien ut
+            libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci
+            eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit
+            amet nibh.
+          </p>
+        </article>
+
+        <article id="adipiscing-placeholder">
+          <h2>Adipiscing Placeholder</h2>
+          <p>
+            Curabitur sodales ligula in libero. Sed dignissim lacinia nunc.
+            Curabitur tortor. Pellentesque nibh. Aenean quam. In scelerisque sem
+            at dolor. Maecenas mattis. Sed convallis tristique sem. Proin ut
+            ligula vel nunc egestas porttitor. Morbi lectus risus, iaculis vel,
+            suscipit quis, luctus non, massa.
+          </p>
+          <p>
+            Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum.
+            Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+            ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas
+            tempus, tellus eget condimentum rhoncus, sem quam semper libero.
+          </p>
+        </article>
+      </section>
+    </main>
+  </body>
 </html>
