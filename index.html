@@ -118,6 +118,10 @@
             <h3>Stream on Bad Networks</h3>
           </a>
 
+          <a class="card" id="networking-flexibility-card">
+            <h3>Networking Flexibility</h3>
+          </a>
+
           <a class="card" id="simulcast-card">
             <h3>Simulcast</h3>
           </a>
@@ -246,6 +250,54 @@
           while using others for video.
         </article>
 
+        <article id="networking-flexibility-article">
+          WebRTC can be used as a Peer-to-Peer or Client/Server protocol. You can even do a hybrid mesh so publishers upload to a server, but viewers
+          distribute to each other.
+
+          <h4> Peer-to-Peer </h4>
+          <pre class="mermaid">
+            flowchart LR
+                Broadcaster[Broadcaster]
+                ViewerA[Viewer A]
+                ViewerB[Viewer B]
+                ViewerC[Viewer C]
+
+                Broadcaster -->|WebRTC media| ViewerA
+                Broadcaster -->|WebRTC media| ViewerB
+                Broadcaster -->|WebRTC media| ViewerC
+          </pre>
+
+          <h4> Client/Server </h4>
+          <pre class="mermaid">
+            flowchart LR
+                Broadcaster[Broadcaster]
+                Server[WebRTC Server]
+                ViewerA[Viewer A]
+                ViewerB[Viewer B]
+                ViewerC[Viewer C]
+
+                Broadcaster -->|Upload once| Server
+                Server -->|Forward media| ViewerA
+                Server -->|Forward media| ViewerB
+                Server -->|Forward media| ViewerC
+          </pre>
+
+          <h4> Hybrid Mesh </h4>
+          <pre class="mermaid">
+            flowchart LR
+                Broadcaster[Broadcaster]
+                Server[WebRTC Server]
+                ViewerA[Viewer A]
+                ViewerB[Viewer B]
+                ViewerC[Viewer C]
+
+                Broadcaster -->|Upload once| Server
+                Server -->|Seed media| ViewerA
+                ViewerA -->|Relay media| ViewerB
+                ViewerA -->|Relay media| ViewerC
+          </pre>
+        </article>
+
         <article id="simulcast-article">
           <h2>Simulcast</h2>
           <p>
@@ -326,9 +378,27 @@
         </article>
 
         <article id="codec-flexibility-article">
+          WebRTC does not hardcode video codecs into the protocol. Codecs are negotiated at runtime so other codecs (Like HEVC and AV1) can be trivially added.
+          Custom codecs could also be added if both client/server supported so you can do custom things if you need.
         </article>
 
         <article id="e2e-encryption-article">
+          WebRTC provides APIs that lets broadcasters encrypt media and viewers decrypt it so the server has no access to the video. The server can support
+          all different types of clients thanks to Simulcast.
+
+          <pre class="mermaid">
+            flowchart LR
+                Broadcaster[Broadcaster]
+                Server[WebRTC Server]
+                ViewerA[Viewer A]
+                ViewerB[Viewer B]
+
+                Broadcaster <-->|P2P key exchange| ViewerA
+                Broadcaster <-->|P2P key exchange| ViewerB
+                Broadcaster -->|Encrypted media| Server
+                Server -->|Encrypted media| ViewerA
+                Server -->|Encrypted media| ViewerB
+          </pre>
         </article>
 
       </section>
