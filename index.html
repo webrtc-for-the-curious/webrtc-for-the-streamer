@@ -141,6 +141,44 @@
       </section>
 
       <section id="details">
+        <article id="interactive-latency-article">
+        </article>
+
+        <article id="stream-on-bad-networks-article">
+          WebRTC gives a lot of flexibility in how you can stream. You can configure it to have the lowest latency possible (at the expense of video quality)
+          or you can run it over TCP and have perfect video quality but higher latency. These are some of the knobs that WebRTC gives you.
+
+          <h4> Protocol Choice (TCP or UDP) </h4>
+          WebRTC allows you to choose per session if you want TCP or UDP. If you pick TCP you will have zero packet loss, but may experience higher delay.
+          If you pick UDP you get more control over the experience. You can use things like FEC+NACK to accomodate for a poor network, but still keep lowest latency possible.
+
+          <h4> Sender Driven Bandwidth Estimation </h4>
+          With WebRTC a broadcaster can dynamically change bitrate if needed. WebRTC has a mechanism built into the protocol that is constantly measuring packet loss and delivery time
+          <a href="https://datatracker.ietf.org/doc/rfc8888/"> RFC 8888 </a>. This means instead of setting a static bitrate you can dynamically change to get the best experience possible
+          for your network/hardware.
+
+          This is a simplified example. Broadcasting Software starts at 1080p and tries to upgrade to 2160p. If that results in a bad experience it drops back to 1080p. WebRTC provides the
+          Receiver Feedback needed to make these decisions.
+          <pre class="mermaid">
+            sequenceDiagram
+                OBS->>Server: Sending 1080p
+                Server-->>OBS: Zero Packet Loss, 50ms trip time
+                OBS->>Server: Sending 2160p
+                Server-->>OBS: Packet Loss, 150ms trip time
+                OBS->>Server: Sending 1080p
+                Server-->>OBS: Zero Packet Loss, 50ms trip time
+          </pre>
+
+
+          <h4> Forward Error Correction (FEC) </h4>
+
+          <h4> Negative-Acknowledgement (NACK) </h4>
+
+          <h4> Mobility (ICE Renomination) </h4>
+
+          <h4> Connection Bonding </h4>
+        </article>
+
         <article id="simulcast-article">
           <h2>Simulcast</h2>
           <p>
@@ -190,6 +228,29 @@
 
           </p>
         </article>
+
+        <article id="browser-streaming-article">
+          Streaming from the browser increases accessibility. The video quality/composition won't be as good, but these voices are important.
+
+          <h4> Everyone can Broadcast </h4>
+          Streaming today requires that you install dedicated software. When configuring your software you have to be aware of things like bitrate, codecs and watch your resource usage.
+          Broadcasting from the browser significantly reduces the barrier of entry to streaming. So many new voices and types of streams will be available when it is opened to more people.
+
+          <h4> Browser is everywhere </h4>
+          A Web Browser is available everywhere. Phones, TVs, tablets and smart cars etc... this allows you to broadcast from all these places where it wasn't available before.
+          Also many people are using comptures where they aren't able to install additional software. It would be great to enable them to stream even if they don't have root access
+          to the machine.
+        </article>
+
+        <article id="easier-self-hosting-article">
+        </article>
+
+        <article id="codec-flexibility-article">
+        </article>
+
+        <article id="e2e-encryption-article">
+        </article>
+
       </section>
 
       <h2 id="how-to-stream">How to Stream</h2>
