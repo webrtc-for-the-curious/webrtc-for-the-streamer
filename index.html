@@ -95,7 +95,7 @@
         dramatic improvement!
       </p>
       <p>
-        All of these patterns and concepts are available in other protocols (RTMP, SRT, RTSP, HLS, MoQ, RIST). The protocol itself isn't the important part.
+        These patterns and concepts are available in other protocols (RTMP, SRT, RTSP, HLS, MoQ, RIST). The protocol itself isn't the important part.
         We would just like streamers to know that these things are possible. These improvements can change so many things around streaming for the better.
       </p>
       <p>
@@ -171,6 +171,36 @@
 
 
           <h4> Forward Error Correction (FEC) </h4>
+          Forward Error Correction allows you to send redundancy/duplicated info ahead of time so packet loss has no impact on the stream. It consumes extra bandwidth, but is a great solution
+          if are running over satellite/cellular and have bandwidth available but are combating packet loss.
+          <pre class="mermaid">
+            flowchart TD
+                subgraph Sender
+                    A[Video Frame A]
+                    B[Video Frame B]
+                    C[Video Frame C]
+                    A2[Video Frame A]
+                    B2[Video Frame B]
+                    C2[Video Frame C]
+                end
+                subgraph Receiver
+                    ARecv[Video Frame A]
+                    BRecv[Video Frame B]
+                    CRecv[Video Frame C]
+
+                end
+                I((Internet))
+                Sender-->I
+                I-->Receiver
+
+
+                style A fill:red
+                style B2 fill:red
+                style C fill:red
+                style ARecv fill:green
+                style BRecv fill:green
+                style CRecv fill:green
+          </pre>
 
           <h4> Negative-Acknowledgement (NACK) </h4>
 
