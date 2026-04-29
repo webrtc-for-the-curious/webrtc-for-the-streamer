@@ -310,6 +310,19 @@
         </article>
 
         <article id="easier-self-hosting-article">
+          WebRTC has quite a few self hosting options. This has happened for a few reasons
+
+          <h4> Wide usage outside of streaming </h4>
+          WebRTC is widely used outside of broadcasting. It is used for robotics, conferencing, 'AI voice assistants' and more.
+          So can benefits from the ecosystem that existed before WebRTC broadcasting.
+
+          <h4> One protocol for publish+playback </h4>
+          If you are using RTMP you have to use another protocol for playback (usually HLS/DASH). With WHIP and WHEP you can use WebRTC for both,
+          which means fewer moving parts to run.
+
+          <h4> Cheaper to run/no transcoding </h4>
+          A WebRTC server justs forwards media packets instead of transcoding the stream. It's a lot easier to deploy/manage/scale because of this.
+
         </article>
 
         <article id="codec-flexibility-article">
