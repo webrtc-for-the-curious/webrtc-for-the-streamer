@@ -95,6 +95,10 @@
         dramatic improvement!
       </p>
       <p>
+        All of these patterns and concepts are available in other protocols (RTMP, SRT, RTSP, HLS, MoQ, RIST). The protocol itself isn't the important part.
+        We would just like streamers to know that these things are possible. These improvements can change so many things around streaming for the better.
+      </p>
+      <p>
         <i>WebRTC for the Streamer</i> was written by the developers who added
         <a href="https://obsproject.com/kb/whip-streaming-guide">WHIP/WebRTC support to OBS</a>
         and maintain
@@ -165,11 +169,30 @@
           <p>
             Traditionally with broadcast software you would upload the 2160p feed, and the server would transcode
             down to the other layers. WebRTC's apporach to this problem has a few benefits.
+
+            <h4> Better Quality </h4>
+            A 1080p video stream generated via transcoding will not have the same quality as one generated in OBS directly. Transcoding suffers from generational loss.
+            When video is decoded and re-encoded additional compression artifacts and loss of detail will happen. With Simulcast you only encode once.
+
+            <h4> More Control </h4>
+            When doing transcodes you only control the encoding quality of one stream. With Simulcast you can ensure all your video streams are high quality.
+
+            <h4> Lower Latency </h4>
+            Transcoding adds additional latency. Running an additional decode + encode for your transcoded feeds means they will have a different latency then your
+            uploaded feed. With Simulcast all your feeds run at the same latency.
+
+            <h4> Simpler Servers </h4>
+            Running servers without transcoding is much easier. Transcoding requires a lot of computing power, while Simulcast just means extra upload traffic.
+
+            <h4> No Tampering/Ad Insertion </h4>
+            Simulcast means you pass through video feeds untampered. If the server is re-encoding your video it can insert watermarks/ads or modify the video in unexpected ways.
+            With E2E Encryption broadcasters can even have it that the server can't even decode your video. They will see a stream of bytes pass through, but will not actually be able to watch the video.
+
           </p>
         </article>
       </section>
 
-      <h2 id="get-started">Get Started</h2>
+      <h2 id="how-to-stream">How to Stream</h2>
     </main>
     <script type="module">
       for (let card of document.getElementsByClassName('card')) {
