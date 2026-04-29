@@ -218,10 +218,32 @@
           </pre>
 
           <h4> Negative-Acknowledgement (NACK) </h4>
+          NACK is another error correction technique. Instead of sending duplicated data ahead of time the receiver asks for missing packets again.
+          This is a good fit when packet loss is small and the stream still has time to repair the frame. It uses less bandwidth than FEC, but if
+          the network is already too delayed the resent packet might arrive too late to be useful.
+          <pre class="mermaid">
+            sequenceDiagram
+                participant OBS
+                participant Server
+                OBS->>Server: Sending packet 101
+                Note over OBS,Server: Packet 102 is lost
+                OBS->>Server: Sending packet 103
+                Server-->>OBS: NACK packet 102
+                OBS->>Server: Re-send packet 102
+                Server->>Server: Build video frame from 101, 102, 103
+          </pre>
+
 
           <h4> Mobility (ICE Renomination) </h4>
+          Switching between WiFi/Cellular used to require a full re-connect of the stream. With WebRTC you can switch networks without
+          disconnection anything. The network switch also allows for easier administration. Servers can be updated/restarted without requiring
+          users to fully disconnect.
 
           <h4> Connection Bonding </h4>
+          WebRTC allows accepting video from multiple sources. You can combine multiple 5G/Wifi interfaces and send video
+          over them. This technique is niche, but it opens up lots of interesting options. You can send your most important video
+          feed over your most stable interface. Some users will also send their more latency sensitive media (audio) over one interface
+          while using others for video.
         </article>
 
         <article id="simulcast-article">
@@ -301,8 +323,19 @@
       <h2 id="how-to-stream">How to Stream</h2>
     </main>
     <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.esm.min.mjs'
+
+      mermaid.initialize({ startOnLoad: false })
+
+      const renderMermaid = async (article) => {
+        const diagrams = article.querySelectorAll('.mermaid:not([data-processed="true"])')
+        if (diagrams.length > 0) {
+          await mermaid.run({ nodes: diagrams })
+        }
+      }
+
       for (let card of document.getElementsByClassName('card')) {
-        card.onclick = () => {
+        card.onclick = async () => {
           const clickedArticleElement = document.getElementById(card.id.replace('card', 'article'))
           for (let article of document.getElementsByTagName('article')) {
             if (article === clickedArticleElement) {
@@ -311,11 +344,12 @@
               article.classList.remove('active')
             }
           }
+
+          if (clickedArticleElement.classList.contains('active')) {
+            await renderMermaid(clickedArticleElement)
+          }
         }
       }
-    </script>
-    <script type="module">
-      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs'
     </script>
   </body>
 </html>
