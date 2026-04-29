@@ -76,6 +76,14 @@
       #details article.active {
         display: block;
       }
+
+      .mermaid {
+        visibility: hidden;
+      }
+
+      .mermaid[data-processed="true"] {
+        visibility: visible;
+      }
     </style>
   </head>
   <body>
@@ -93,6 +101,8 @@
         <a href="https://github.com/glimesh/broadcast-box">Broadcast Box</a>. A companion piece to
         this site is <a href="https://webrtcforthecurious.com">WebRTC for the Curious</a>.
       </p>
+
+      <h2 id="get-started">WebRTC (WHIP/WHEP) Benefits</h2>
 
       <section aria-label="Cards">
         <div class="cards">
@@ -128,14 +138,40 @@
 
       <section id="details">
         <article id="simulcast-article">
+          <h2>Simulcast</h2>
           <p>
-            Simulcast
+            When streaming video you will need to support different types of users. A phone on 5G works best with 1080p while a
+            desktop compture on fiber can support 2160p. With Simulcast the Broadcaster generates and uploads all quality levels.
+            The server then forwards the video feeds appropriately.
+          </p>
+          <pre class="mermaid">
+            flowchart LR
+                A[OBS/FFmpeg]
+                B[Server]
+                C[Viewer]
+                D[Viewer]
+                E[Viewer]
+                A --> |2160p|B
+                A --> |1440p|B
+                A --> |1080p|B
+                B --> |2160p|C
+                B --> |1440p|D
+                B --> |1080p|E
+
+            linkStyle 0,3 stroke: red
+            linkStyle 1,4 stroke: green
+            linkStyle 2,5 stroke: blue
+          </pre>
+          <p>
+            Traditionally with broadcast software you would upload the 2160p feed, and the server would transcode
+            down to the other layers. WebRTC's apporach to this problem has a few benefits.
           </p>
         </article>
       </section>
 
+      <h2 id="get-started">Get Started</h2>
     </main>
-    <script>
+    <script type="module">
       for (let card of document.getElementsByClassName('card')) {
         card.onclick = () => {
           const clickedArticleElement = document.getElementById(card.id.replace('card', 'article'))
@@ -148,6 +184,9 @@
           }
         }
       }
+    </script>
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs'
     </script>
   </body>
 </html>
