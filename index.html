@@ -177,6 +177,42 @@
         font-size: 1.1rem;
       }
 
+      .publish-tabs {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+        margin-bottom: 16px;
+        padding: 4px;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        background: var(--code);
+      }
+
+      .publish-tab {
+        min-height: 38px;
+        border: 0;
+        border-radius: 4px;
+        background: transparent;
+        color: var(--muted);
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .publish-tab[aria-selected="true"] {
+        background: var(--panel);
+        color: var(--ink);
+      }
+
+      .publish-tab:focus,
+      .publish-tab:hover {
+        color: var(--accent-hover);
+      }
+
+      .publish-panel[hidden] {
+        display: none;
+      }
+
       .try-meta {
         display: grid;
         gap: 10px;
@@ -184,7 +220,7 @@
         color: var(--muted);
       }
 
-      .try-meta div {
+      .try-meta > div {
         display: grid;
         gap: 2px;
       }
@@ -196,24 +232,29 @@
 
       .token-field {
         display: flex;
-        flex-wrap: wrap;
+        flex-direction: column;
         gap: 8px;
-        align-items: center;
+        align-items: stretch;
       }
 
       .token-field code {
-        flex: 1 1 220px;
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+        overflow-x: auto;
         padding: 10px 12px;
         border: 1px solid var(--rule);
         border-radius: 6px;
         background: var(--code);
         font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
         line-height: 1.4;
+        white-space: nowrap;
         user-select: all;
       }
 
       .copy-token {
         min-height: 38px;
+        width: 100%;
         padding: 0 12px;
         border: 1px solid var(--border);
         border-radius: 6px;
@@ -237,6 +278,10 @@
         border: 1px solid var(--rule);
         border-radius: 6px;
         background: var(--code);
+      }
+
+      .publish-preview {
+        margin-top: 12px;
       }
 
       .try-actions {
@@ -414,33 +459,55 @@
         <h2 id="try-it-now">Try it now</h2>
         <p>
           This test stream uses the public Broadcast Box instance at <a href="https://b.siobud.com/">b.siobud.com</a>.
-          Publish with the OBS settings below, then watch the WebRTC playback directly on this page.
+          Publish from this browser or OBS, then watch the WebRTC playback directly on this page or on <a href="https://b.siobud.com/">b.siobud.com</a>.
+          You can share the <a href="https://b.siobud.com/">b.siobud.com</a> watch link with others.
         </p>
         <div class="try-grid">
           <div class="try-card">
             <h3>Publish</h3>
-            <div class="try-meta" aria-label="OBS settings">
-              <div>
-                <strong>Service</strong>
-                <code>WHIP</code>
+            <div class="publish-tabs" role="tablist" aria-label="Publish method">
+              <button class="publish-tab" id="try-browser-tab" type="button" role="tab" aria-selected="true" aria-controls="try-browser-panel">
+                Browser
+              </button>
+              <button class="publish-tab" id="try-obs-tab" type="button" role="tab" aria-selected="false" aria-controls="try-obs-panel">
+                OBS
+              </button>
+            </div>
+
+            <div class="publish-panel" id="try-browser-panel" role="tabpanel" aria-labelledby="try-browser-tab">
+              <video id="try-publish-preview" class="try-video publish-preview" autoplay muted playsinline></video>
+              <div class="try-actions">
+                <button class="button-link" id="try-publish-screen" type="button">Publish screen</button>
+                <button class="button-link secondary" id="try-publish-webcam" type="button">Publish webcam</button>
+                <button class="button-link secondary" id="try-stop-publish" type="button" disabled>Stop</button>
               </div>
-              <div>
-                <strong>Server</strong>
-                <code>https://b.siobud.com/api/whip</code>
-              </div>
-              <div>
-                <strong>Bearer Token</strong>
-                <div class="token-field">
-                  <code id="try-obs-stream-key">Generating stream key...</code>
-                  <button class="copy-token" id="try-copy-token" type="button">Copy</button>
+              <p class="try-status" id="try-publish-status">Not publishing.</p>
+            </div>
+
+            <div class="publish-panel" id="try-obs-panel" role="tabpanel" aria-labelledby="try-obs-tab" hidden>
+              <div class="try-meta" aria-label="OBS settings">
+                <div>
+                  <strong>Service</strong>
+                  <code>WHIP</code>
+                </div>
+                <div>
+                  <strong>Server</strong>
+                  <code>https://b.siobud.com/api/whip</code>
+                </div>
+                <div>
+                  <strong>Bearer Token</strong>
+                  <div class="token-field">
+                    <code id="try-obs-stream-key">Generating stream key...</code>
+                    <button class="copy-token" id="try-copy-token" type="button">Copy</button>
+                  </div>
                 </div>
               </div>
+              <p class="try-note">
+                For lower latency in OBS, see
+                <a href="https://github.com/glimesh/broadcast-box#obs-broadcasting">Broadcast Box's OBS broadcasting notes</a>
+                for custom encoder settings.
+              </p>
             </div>
-            <p class="try-note">
-              For lower latency in OBS, see
-              <a href="https://github.com/glimesh/broadcast-box#obs-broadcasting">Broadcast Box's OBS broadcasting notes</a>
-              for custom encoder settings.
-            </p>
           </div>
           <div class="try-card">
             <h3>Watch</h3>
@@ -853,14 +920,27 @@
     <script>
       (() => {
         const broadcastBoxURL = 'https://b.siobud.com'
+        const whipURL = `${broadcastBoxURL}/api/whip`
         const whepURL = `${broadcastBoxURL}/api/whep`
+        const browserTab = document.getElementById('try-browser-tab')
+        const obsTab = document.getElementById('try-obs-tab')
+        const browserPanel = document.getElementById('try-browser-panel')
+        const obsPanel = document.getElementById('try-obs-panel')
         const obsStreamKeyOutput = document.getElementById('try-obs-stream-key')
         const copyTokenButton = document.getElementById('try-copy-token')
+        const publishScreenButton = document.getElementById('try-publish-screen')
+        const publishWebcamButton = document.getElementById('try-publish-webcam')
+        const stopPublishButton = document.getElementById('try-stop-publish')
+        const publishPreview = document.getElementById('try-publish-preview')
+        const publishStatus = document.getElementById('try-publish-status')
         const hostedPlayerLink = document.getElementById('try-hosted-player')
         const watchButton = document.getElementById('try-watch')
         const video = document.getElementById('try-video')
         const status = document.getElementById('try-status')
         let peerConnection
+        let publishPeerConnection
+        let publishMediaStream
+        let publishSessionURL
 
         const generateStreamKey = () => {
           const bytes = new Uint8Array(11)
@@ -877,6 +957,10 @@
 
         const setStatus = (message) => {
           status.textContent = message
+        }
+
+        const setPublishStatus = (message) => {
+          publishStatus.textContent = message
         }
 
         const streamKey = generateStreamKey()
@@ -900,6 +984,119 @@
               selection.addRange(range)
               copyTokenButton.textContent = 'Selected'
             }
+          }
+        }
+
+        const selectPublishTab = (selectedTab) => {
+          const browserSelected = selectedTab === 'browser'
+          browserTab.setAttribute('aria-selected', browserSelected ? 'true' : 'false')
+          obsTab.setAttribute('aria-selected', browserSelected ? 'false' : 'true')
+          browserPanel.hidden = !browserSelected
+          obsPanel.hidden = browserSelected
+        }
+
+        const setPublishControls = (isPublishing) => {
+          publishScreenButton.disabled = isPublishing
+          publishWebcamButton.disabled = isPublishing
+          stopPublishButton.disabled = !isPublishing
+        }
+
+        const stopBrowserPublish = async (message = 'Not publishing.') => {
+          const sessionURL = publishSessionURL
+          publishSessionURL = undefined
+
+          if (sessionURL) {
+            fetch(sessionURL, {
+              method: 'DELETE',
+              headers: {
+                Authorization: `Bearer ${streamKey}`
+              }
+            }).catch(() => {})
+          }
+
+          if (publishPeerConnection) {
+            publishPeerConnection.close()
+            publishPeerConnection = undefined
+          }
+
+          if (publishMediaStream) {
+            publishMediaStream.getTracks().forEach((track) => track.stop())
+            publishMediaStream = undefined
+          }
+
+          publishPreview.srcObject = null
+          setPublishControls(false)
+          setPublishStatus(message)
+        }
+
+        const publishFromBrowser = async (source) => {
+          await stopBrowserPublish('Starting browser publisher...')
+          publishScreenButton.disabled = true
+          publishWebcamButton.disabled = true
+          stopPublishButton.disabled = true
+
+          try {
+            if (!navigator.mediaDevices) {
+              throw new Error('Browser media capture is not available')
+            }
+
+            setPublishStatus('Waiting for browser permission...')
+            const mediaStream = source === 'screen'
+              ? await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true })
+              : await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+
+            publishMediaStream = mediaStream
+            publishPreview.srcObject = mediaStream
+
+            const currentConnection = new RTCPeerConnection()
+            publishPeerConnection = currentConnection
+
+            mediaStream.getTracks().forEach((track) => {
+              currentConnection.addTrack(track, mediaStream)
+              track.addEventListener('ended', () => {
+                if (publishPeerConnection === currentConnection) {
+                  stopBrowserPublish()
+                }
+              })
+            })
+
+            currentConnection.oniceconnectionstatechange = () => {
+              setPublishStatus(`Publish connection state: ${currentConnection.iceConnectionState}`)
+            }
+
+            const offer = await currentConnection.createOffer()
+            await currentConnection.setLocalDescription(offer)
+
+            const response = await fetch(whipURL, {
+              method: 'POST',
+              body: offer.sdp,
+              headers: {
+                Authorization: `Bearer ${streamKey}`,
+                'Content-Type': 'application/sdp'
+              }
+            })
+
+            if (!response.ok) {
+              throw new Error(`WHIP publish failed with HTTP ${response.status}`)
+            }
+
+            const sessionLocation = response.headers.get('Location')
+            if (sessionLocation) {
+              publishSessionURL = new URL(sessionLocation, broadcastBoxURL).toString()
+            }
+
+            const answer = await response.text()
+            await currentConnection.setRemoteDescription({
+              sdp: answer,
+              type: 'answer'
+            })
+
+            setPublishControls(true)
+            setPublishStatus('Publishing from this browser.')
+          } catch (error) {
+            await stopBrowserPublish()
+            const message = error instanceof Error ? error.message : 'Unable to publish'
+            setPublishStatus(`${message}.`)
           }
         }
 
@@ -964,6 +1161,11 @@
 
         watchButton.addEventListener('click', watchStream)
         copyTokenButton.addEventListener('click', copyStreamKey)
+        browserTab.addEventListener('click', () => selectPublishTab('browser'))
+        obsTab.addEventListener('click', () => selectPublishTab('obs'))
+        publishScreenButton.addEventListener('click', () => publishFromBrowser('screen'))
+        publishWebcamButton.addEventListener('click', () => publishFromBrowser('webcam'))
+        stopPublishButton.addEventListener('click', () => stopBrowserPublish())
       })()
     </script>
     <script type="module">
