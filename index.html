@@ -194,6 +194,42 @@
         color: var(--ink);
       }
 
+      .token-field {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .token-field code {
+        flex: 1 1 220px;
+        padding: 10px 12px;
+        border: 1px solid var(--rule);
+        border-radius: 6px;
+        background: var(--code);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+        line-height: 1.4;
+        user-select: all;
+      }
+
+      .copy-token {
+        min-height: 38px;
+        padding: 0 12px;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        background: var(--panel);
+        color: var(--ink);
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .copy-token:hover,
+      .copy-token:focus {
+        border-color: var(--accent);
+        color: var(--accent-hover);
+      }
+
       .try-video {
         display: block;
         width: 100%;
@@ -394,7 +430,10 @@
               </div>
               <div>
                 <strong>Bearer Token</strong>
-                <code id="try-obs-stream-key">Generating stream key...</code>
+                <div class="token-field">
+                  <code id="try-obs-stream-key">Generating stream key...</code>
+                  <button class="copy-token" id="try-copy-token" type="button">Copy</button>
+                </div>
               </div>
             </div>
             <p class="try-note">
@@ -816,6 +855,7 @@
         const broadcastBoxURL = 'https://b.siobud.com'
         const whepURL = `${broadcastBoxURL}/api/whep`
         const obsStreamKeyOutput = document.getElementById('try-obs-stream-key')
+        const copyTokenButton = document.getElementById('try-copy-token')
         const hostedPlayerLink = document.getElementById('try-hosted-player')
         const watchButton = document.getElementById('try-watch')
         const video = document.getElementById('try-video')
@@ -843,6 +883,25 @@
         const encodedStreamKey = encodeURIComponent(streamKey)
         obsStreamKeyOutput.textContent = streamKey
         hostedPlayerLink.href = `${broadcastBoxURL}/${encodedStreamKey}?cinemaMode=true`
+
+        const copyStreamKey = async () => {
+          try {
+            await navigator.clipboard.writeText(streamKey)
+            copyTokenButton.textContent = 'Copied'
+            window.setTimeout(() => {
+              copyTokenButton.textContent = 'Copy'
+            }, 1400)
+          } catch {
+            const range = document.createRange()
+            range.selectNodeContents(obsStreamKeyOutput)
+            const selection = window.getSelection()
+            if (selection) {
+              selection.removeAllRanges()
+              selection.addRange(range)
+              copyTokenButton.textContent = 'Selected'
+            }
+          }
+        }
 
         const closeExistingConnection = () => {
           if (peerConnection) {
@@ -904,6 +963,7 @@
         }
 
         watchButton.addEventListener('click', watchStream)
+        copyTokenButton.addEventListener('click', copyStreamKey)
       })()
     </script>
     <script type="module">
