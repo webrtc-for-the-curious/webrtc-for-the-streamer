@@ -5,179 +5,314 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>WebRTC for the Streamer</title>
     <style>
+      :root {
+        color-scheme: dark;
+        --paper: #111315;
+        --panel: #181b1e;
+        --ink: #ece7dd;
+        --muted: #aaa196;
+        --border: #34302a;
+        --accent: #82d5c1;
+        --accent-hover: #a8ead9;
+        --code: #0d1012;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
       body {
         margin: 0;
-        font-family: Arial, sans-serif;
-        line-height: 1.5;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        line-height: 1.6;
       }
 
       main {
-        max-width: 900px;
+        max-width: 860px;
         margin: 0 auto;
-        padding: 24px;
+        padding: 40px 22px 64px;
       }
 
-      .cards {
-        display: grid;
-        gap: 12px;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      h1,
+      h2,
+      h3,
+      h4 {
+        line-height: 1.2;
+        letter-spacing: 0;
       }
 
-      .card {
-        display: block;
-        padding: 16px;
-        border: 1px solid #cccccc;
-        border-radius: 8px;
-        text-decoration: none;
-        background: #f7f7f7;
+      h1 {
+        margin: 0 0 16px;
+        font-size: 2.5rem;
       }
 
-      .card:hover,
-      .card:focus {
-        background: #efefef;
+      h2 {
+        margin: 48px 0 16px;
+        font-size: 1.55rem;
       }
 
-      .card.active {
-        background: #e6e6e6;
-        border-color: #999999;
+      h3 {
+        margin: 0 0 12px;
+        font-size: 1.2rem;
       }
 
-      .card h3 {
-        margin: 0 0 8px;
+      h4 {
+        margin: 24px 0 8px;
+        font-size: 1rem;
       }
 
-      .card p {
-        margin: 0;
+      p {
+        margin: 0 0 16px;
       }
 
-      section {
-        margin-top: 24px;
+      a {
+        color: var(--accent);
+        text-decoration-thickness: 1px;
+        text-underline-offset: 0.18em;
       }
 
-      #details {
+      a:hover,
+      a:focus {
+        color: var(--accent-hover);
+      }
+
+      ul {
+        padding-left: 22px;
+      }
+
+      li + li {
+        margin-top: 6px;
+      }
+
+      .intro {
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 20px;
+      }
+
+      .byline {
+        color: var(--muted);
+        font-size: 0.96rem;
+      }
+
+      .problem-list {
+        margin-top: 28px;
         padding: 20px;
-        border: 1px solid #cccccc;
+        border: 1px solid var(--border);
         border-radius: 8px;
-        display: none;
+        background: var(--panel);
       }
 
-      #details:has(> .active) {
-        display: block;
-      }
-
-      #details h2 {
+      .problem-list h2 {
         margin-top: 0;
       }
 
-      #details article {
-        display: none;
+      .problem-list ul {
+        display: grid;
+        gap: 0;
+        margin: 18px 0 0;
+        padding: 0;
+        list-style: none;
       }
 
-      #details article.active {
+      .problem-list li {
+        padding: 12px 0;
+        border-top: 1px solid var(--border);
+      }
+
+      .problem-list li:first-child {
+        border-top: 0;
+        padding-top: 0;
+      }
+
+      .problem-list a {
+        font-weight: 700;
+      }
+
+      .problem-list span {
         display: block;
+        margin-top: 2px;
+        color: var(--muted);
+      }
+
+      .explanations {
+        margin-top: 44px;
+      }
+
+      article {
+        margin-top: 34px;
+        padding-top: 28px;
+        border-top: 1px solid var(--border);
+        scroll-margin-top: 24px;
+      }
+
+      article:target {
+        margin-right: -16px;
+        margin-left: -16px;
+        padding-right: 16px;
+        padding-left: 16px;
+        border-radius: 8px;
+        background: var(--panel);
+      }
+
+      pre {
+        overflow-x: auto;
+        margin: 18px 0 24px;
+        padding: 14px;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        background: var(--code);
       }
 
       .mermaid {
-        visibility: hidden;
+        text-align: center;
       }
 
-      .mermaid[data-processed="true"] {
-        visibility: visible;
+      @media (max-width: 640px) {
+        main {
+          padding: 28px 18px 48px;
+        }
+
+        h1 {
+          font-size: 2rem;
+        }
+
+        h2 {
+          font-size: 1.35rem;
+        }
+
+        .problem-list {
+          padding: 16px;
+        }
+
+        article:target {
+          margin-right: -10px;
+          margin-left: -10px;
+          padding-right: 10px;
+          padding-left: 10px;
+        }
       }
     </style>
   </head>
   <body>
     <main>
-      <h1>WebRTC for the Streamer</h1>
-      <p>
-        We wrote this site to explain/share the ways that we believe WebRTC (WHIP/WHEP) can improve streaming. Things like improving quality,
-        making it easier to self-host and reducing latency. Some of these changes may only benefit a niche of streamers, but to those streamers it is a
-        dramatic improvement!
-      </p>
-      <p>
-        These patterns and concepts are available in other protocols (RTMP, SRT, RTSP, HLS, MoQ, RIST). The protocol itself isn't the important part.
-        We would just like streamers to know that these things are possible. These improvements can change so many things around streaming for the better.
-      </p>
-      <p>
-        <i>WebRTC for the Streamer</i> was written by the developers who added
-        <a href="https://obsproject.com/kb/whip-streaming-guide">WHIP/WebRTC support to OBS</a>
-        and maintain
-        <a href="https://github.com/glimesh/broadcast-box">Broadcast Box</a>. A companion piece to
-        this site is <a href="https://webrtcforthecurious.com">WebRTC for the Curious</a>.
-      </p>
+      <div class="intro">
+        <h1>WebRTC for the Streamer</h1>
+        <p>
+          We wrote this site to explain/share the ways that we believe WebRTC (WHIP/WHEP) can improve streaming. Things like improving quality,
+          making it easier to self-host and reducing latency. Some of these changes may only benefit a niche of streamers, but to those streamers it is a
+          dramatic improvement.
+        </p>
+        <p>
+          These patterns and concepts are available in other protocols (RTMP, SRT, RTSP, HLS, MoQ, RIST). The protocol itself isn't the important part.
+          We would just like streamers to know that these things are possible. These improvements can change so many things around streaming for the better.
+        </p>
+        <p class="byline">
+          <i>WebRTC for the Streamer</i> was written by the developers who added
+          <a href="https://obsproject.com/kb/whip-streaming-guide">WHIP/WebRTC support to OBS</a>
+          and maintain
+          <a href="https://github.com/glimesh/broadcast-box">Broadcast Box</a>. A companion piece to
+          this site is <a href="https://webrtcforthecurious.com">WebRTC for the Curious</a>.
+        </p>
+      </div>
 
-      <h2>Why should I use WHIP/WHEP?</h2>
-
-      <section aria-label="Cards">
-        <div class="cards">
-          <a class="card" id="interactive-latency-card">
-            <h3>Interactive Latency</h3>
-          </a>
-
-          <a class="card" id="stream-on-bad-networks-card">
-            <h3>Stream on Bad Networks</h3>
-          </a>
-
-          <a class="card" id="networking-flexibility-card">
-            <h3>Networking Flexibility</h3>
-          </a>
-
-          <a class="card" id="simulcast-card">
-            <h3>Simulcast</h3>
-          </a>
-
-          <a class="card" id="browser-streaming-card">
-            <h3>Browser Streaming</h3>
-          </a>
-
-          <a class="card" id="easier-self-hosting-card">
-            <h3>Easier Self-Hosting</h3>
-          </a>
-
-          <a class="card" id="codec-flexibility-card">
-            <h3>Codec Flexibility</h3>
-          </a>
-
-          <a class="card" id="e2e-encryption-card">
-            <h3>End-to-end encryption</h3>
-          </a>
-        </div>
+      <section class="problem-list" aria-labelledby="choose-problem">
+        <h2 id="choose-problem">Choose what problem you have</h2>
+        <p>
+          Start with the problem that matches your stream. These are normal sections below, so you can skim the whole page
+          or send someone a direct link.
+        </p>
+        <ul>
+          <li>
+            <a href="#interactive-latency">I need chat, co-streaming, or watch parties to feel live.</a>
+            <span>Use WebRTC when sub-second latency changes the experience.</span>
+          </li>
+          <li>
+            <a href="#stream-on-bad-networks">I stream from unstable networks.</a>
+            <span>Use WebRTC when you need better control over loss, delay, and network changes.</span>
+          </li>
+          <li>
+            <a href="#networking-flexibility">I want more control over how viewers receive the stream.</a>
+            <span>Use WebRTC for peer-to-peer, client/server, or hybrid distribution.</span>
+          </li>
+          <li>
+            <a href="#simulcast">I need multiple quality levels without server transcoding.</a>
+            <span>Use simulcast when the broadcaster can upload several qualities directly.</span>
+          </li>
+          <li>
+            <a href="#browser-streaming">I want people to broadcast from a browser.</a>
+            <span>Use WHIP when installing dedicated software is too much friction.</span>
+          </li>
+          <li>
+            <a href="#easier-self-hosting">I want self-hosting to have fewer moving parts.</a>
+            <span>Use WHIP/WHEP when one protocol for publishing and playback is useful.</span>
+          </li>
+          <li>
+            <a href="#codec-flexibility">I care about codec choice.</a>
+            <span>Use WebRTC when runtime codec negotiation matters.</span>
+          </li>
+          <li>
+            <a href="#e2e-encryption">I need the server to avoid seeing the video.</a>
+            <span>Use end-to-end media encryption for streams where privacy matters.</span>
+          </li>
+        </ul>
       </section>
 
-      <section id="details">
-        <article id="interactive-latency-article">
-          With WebRTC you get sub-500ms latency, you will get the experience of a video call. Having this latency can change the dynamics of streaming.
+      <section class="explanations" aria-labelledby="why-whip-whep">
+        <h2 id="why-whip-whep">Why should I use WHIP/WHEP?</h2>
 
-          <h4> Streaming Together </h4>
-          Streaming to a private group of friends is more connected when the latency is lower. It's a lot of fun to recreate the 'sitting on the couch together'
-          experience when you stream gameplay/movie to your friends.
+        <article id="interactive-latency">
+          <h3>Interactive latency</h3>
+          <p>
+            With WebRTC you get sub-500ms latency, you will get the experience of a video call. Having this latency can change the dynamics of streaming.
+          </p>
 
-          <h4> Co-Streaming to an Audience </h4>
-          When co-streaming to an audience you want the lowest latency possible. It allows you to have authentic conversations with the other streamer, instead of
-          an awkward back and forth. High latency leads to desync between you and your partners gameplay. It is confusing as a viewer to see events happening
-          at different times on the two feeds.
+          <h4>Streaming together</h4>
+          <p>
+            Streaming to a private group of friends is more connected when the latency is lower. It's a lot of fun to recreate the "sitting on the couch together"
+            experience when you stream gameplay/movie to your friends.
+          </p>
 
-          <h4> Audience Interaction </h4>
-          WebRTC allows you to respond to chat like a real conversation. It feels like a more connected/human experience to talk with people directly, and not responding seconds later.
-          The audience interaction doesn't have to be text only. Some games allow the audience to change the game enviroment itself. Seeing it instantly react when they press
-          the button is kind of magical.
+          <h4>Co-streaming to an audience</h4>
+          <p>
+            When co-streaming to an audience you want the lowest latency possible. It allows you to have authentic conversations with the other streamer, instead of
+            an awkward back and forth. High latency leads to desync between you and your partner's gameplay. It is confusing as a viewer to see events happening
+            at different times on the two feeds.
+          </p>
+
+          <h4>Audience interaction</h4>
+          <p>
+            WebRTC allows you to respond to chat like a real conversation. It feels like a more connected/human experience to talk with people directly, and not responding seconds later.
+            The audience interaction doesn't have to be text only. Some games allow the audience to change the game environment itself. Seeing it instantly react when they press
+            the button is kind of magical.
+          </p>
         </article>
 
-        <article id="stream-on-bad-networks-article">
-          WebRTC gives a lot of flexibility in how you can stream. You can configure it to have the lowest latency possible (at the expense of video quality)
-          or you can run it over TCP and have perfect video quality but higher latency. These are some of the knobs that WebRTC gives you.
+        <article id="stream-on-bad-networks">
+          <h3>Stream on bad networks</h3>
+          <p>
+            WebRTC gives a lot of flexibility in how you can stream. You can configure it to have the lowest latency possible (at the expense of video quality)
+            or you can run it over TCP and have perfect video quality but higher latency. These are some of the knobs that WebRTC gives you.
+          </p>
 
-          <h4> Protocol Choice (TCP or UDP) </h4>
-          WebRTC allows you to choose per session if you want TCP or UDP. If you pick TCP you will have zero packet loss, but may experience higher delay.
-          If you pick UDP you get more control over the experience. You can use things like FEC+NACK to accomodate for a poor network, but still keep lowest latency possible.
+          <h4>Protocol choice (TCP or UDP)</h4>
+          <p>
+            WebRTC allows you to choose per session if you want TCP or UDP. If you pick TCP you will have zero packet loss, but may experience higher delay.
+            If you pick UDP you get more control over the experience. You can use things like FEC+NACK to accommodate for a poor network, but still keep lowest latency possible.
+          </p>
 
-          <h4> Sender Driven Bandwidth Estimation </h4>
-          With WebRTC a broadcaster can dynamically change bitrate if needed. WebRTC has a mechanism built into the protocol that is constantly measuring packet loss and delivery time
-          <a href="https://datatracker.ietf.org/doc/rfc8888/"> RFC 8888 </a>. This means instead of setting a static bitrate you can dynamically change to get the best experience possible
-          for your network/hardware.
+          <h4>Sender driven bandwidth estimation</h4>
+          <p>
+            With WebRTC a broadcaster can dynamically change bitrate if needed. WebRTC has a mechanism built into the protocol that is constantly measuring packet loss and delivery time
+            <a href="https://datatracker.ietf.org/doc/rfc8888/">RFC 8888</a>. This means instead of setting a static bitrate you can dynamically change to get the best experience possible
+            for your network/hardware.
+          </p>
 
-          This is a simplified example. Broadcasting Software starts at 1080p and tries to upgrade to 2160p. If that results in a bad experience it drops back to 1080p. WebRTC provides the
-          Receiver Feedback needed to make these decisions.
+          <p>
+            This is a simplified example. Broadcasting software starts at 1080p and tries to upgrade to 2160p. If that results in a bad experience it drops back to 1080p. WebRTC provides the
+            receiver feedback needed to make these decisions.
+          </p>
           <pre class="mermaid">
             sequenceDiagram
                 OBS->>Server: Sending 1080p
@@ -188,10 +323,11 @@
                 Server-->>OBS: Zero Packet Loss, 50ms trip time
           </pre>
 
-
-          <h4> Forward Error Correction (FEC) </h4>
-          Forward Error Correction allows you to send redundancy/duplicated info ahead of time so packet loss has no impact on the stream. It consumes extra bandwidth, but is a great solution
-          if are running over satellite/cellular and have bandwidth available but are combating packet loss.
+          <h4>Forward error correction (FEC)</h4>
+          <p>
+            Forward error correction allows you to send redundancy/duplicated info ahead of time so packet loss has no impact on the stream. It consumes extra bandwidth, but is a great solution
+            if you are running over satellite/cellular and have bandwidth available but are combating packet loss.
+          </p>
           <pre class="mermaid">
             flowchart TD
                 subgraph Sender
@@ -221,10 +357,12 @@
                 style CRecv fill:green
           </pre>
 
-          <h4> Negative-Acknowledgement (NACK) </h4>
-          NACK is another error correction technique. Instead of sending duplicated data ahead of time the receiver asks for missing packets again.
-          This is a good fit when packet loss is small and the stream still has time to repair the frame. It uses less bandwidth than FEC, but if
-          the network is already too delayed the resent packet might arrive too late to be useful.
+          <h4>Negative-acknowledgement (NACK)</h4>
+          <p>
+            NACK is another error correction technique. Instead of sending duplicated data ahead of time the receiver asks for missing packets again.
+            This is a good fit when packet loss is small and the stream still has time to repair the frame. It uses less bandwidth than FEC, but if
+            the network is already too delayed the resent packet might arrive too late to be useful.
+          </p>
           <pre class="mermaid">
             sequenceDiagram
                 participant OBS
@@ -237,24 +375,30 @@
                 Server->>Server: Build video frame from 101, 102, 103
           </pre>
 
+          <h4>Mobility (ICE renomination)</h4>
+          <p>
+            Switching between WiFi/cellular used to require a full reconnect of the stream. With WebRTC you can switch networks without
+            disconnecting anything. The network switch also allows for easier administration. Servers can be updated/restarted without requiring
+            users to fully disconnect.
+          </p>
 
-          <h4> Mobility (ICE Renomination) </h4>
-          Switching between WiFi/Cellular used to require a full re-connect of the stream. With WebRTC you can switch networks without
-          disconnection anything. The network switch also allows for easier administration. Servers can be updated/restarted without requiring
-          users to fully disconnect.
-
-          <h4> Connection Bonding </h4>
-          WebRTC allows accepting video from multiple sources. You can combine multiple 5G/Wifi interfaces and send video
-          over them. This technique is niche, but it opens up lots of interesting options. You can send your most important video
-          feed over your most stable interface. Some users will also send their more latency sensitive media (audio) over one interface
-          while using others for video.
+          <h4>Connection bonding</h4>
+          <p>
+            WebRTC allows accepting video from multiple sources. You can combine multiple 5G/WiFi interfaces and send video
+            over them. This technique is niche, but it opens up lots of interesting options. You can send your most important video
+            feed over your most stable interface. Some users will also send their more latency sensitive media (audio) over one interface
+            while using others for video.
+          </p>
         </article>
 
-        <article id="networking-flexibility-article">
-          WebRTC can be used as a Peer-to-Peer or Client/Server protocol. You can even do a hybrid mesh so publishers upload to a server, but viewers
-          distribute to each other.
+        <article id="networking-flexibility">
+          <h3>Networking flexibility</h3>
+          <p>
+            WebRTC can be used as a peer-to-peer or client/server protocol. You can even do a hybrid mesh so publishers upload to a server, but viewers
+            distribute to each other.
+          </p>
 
-          <h4> Peer-to-Peer </h4>
+          <h4>Peer-to-peer</h4>
           <pre class="mermaid">
             flowchart LR
                 Broadcaster[Broadcaster]
@@ -267,7 +411,7 @@
                 Broadcaster -->|WebRTC media| ViewerC
           </pre>
 
-          <h4> Client/Server </h4>
+          <h4>Client/server</h4>
           <pre class="mermaid">
             flowchart LR
                 Broadcaster[Broadcaster]
@@ -282,7 +426,7 @@
                 Server -->|Forward media| ViewerC
           </pre>
 
-          <h4> Hybrid Mesh </h4>
+          <h4>Hybrid mesh</h4>
           <pre class="mermaid">
             flowchart LR
                 Broadcaster[Broadcaster]
@@ -298,11 +442,11 @@
           </pre>
         </article>
 
-        <article id="simulcast-article">
-          <h2>Simulcast</h2>
+        <article id="simulcast">
+          <h3>Simulcast</h3>
           <p>
             When streaming video you will need to support different types of users. A phone on 5G works best with 1080p while a
-            desktop compture on fiber can support 2160p. With Simulcast the Broadcaster generates and uploads all quality levels.
+            desktop computer on fiber can support 2160p. With simulcast the broadcaster generates and uploads all quality levels.
             The server then forwards the video feeds appropriately.
           </p>
           <pre class="mermaid">
@@ -325,66 +469,96 @@
           </pre>
           <p>
             Traditionally with broadcast software you would upload the 2160p feed, and the server would transcode
-            down to the other layers. WebRTC's apporach to this problem has a few benefits.
+            down to the other layers. WebRTC's approach to this problem has a few benefits.
+          </p>
 
-            <h4> Better Quality </h4>
+          <h4>Better quality</h4>
+          <p>
             A 1080p video stream generated via transcoding will not have the same quality as one generated in OBS directly. Transcoding suffers from generational loss.
-            When video is decoded and re-encoded additional compression artifacts and loss of detail will happen. With Simulcast you only encode once.
+            When video is decoded and re-encoded additional compression artifacts and loss of detail will happen. With simulcast you only encode once.
+          </p>
 
-            <h4> More Control </h4>
-            When doing transcodes you only control the encoding quality of one stream. With Simulcast you can ensure all your video streams are high quality.
+          <h4>More control</h4>
+          <p>
+            When doing transcodes you only control the encoding quality of one stream. With simulcast you can ensure all your video streams are high quality.
+          </p>
 
-            <h4> Lower Latency </h4>
-            Transcoding adds additional latency. Running an additional decode + encode for your transcoded feeds means they will have a different latency then your
-            uploaded feed. With Simulcast all your feeds run at the same latency.
+          <h4>Lower latency</h4>
+          <p>
+            Transcoding adds additional latency. Running an additional decode + encode for your transcoded feeds means they will have a different latency than your
+            uploaded feed. With simulcast all your feeds run at the same latency.
+          </p>
 
-            <h4> Simpler Servers </h4>
-            Running servers without transcoding is much easier. Transcoding requires a lot of computing power, while Simulcast just means extra upload traffic.
+          <h4>Simpler servers</h4>
+          <p>
+            Running servers without transcoding is much easier. Transcoding requires a lot of computing power, while simulcast just means extra upload traffic.
+          </p>
 
-            <h4> No Tampering/Ad Insertion </h4>
+          <h4>No tampering/ad insertion</h4>
+          <p>
             Simulcast means you pass through video feeds untampered. If the server is re-encoding your video it can insert watermarks/ads or modify the video in unexpected ways.
-            With E2E Encryption broadcasters can even have it that the server can't even decode your video. They will see a stream of bytes pass through, but will not actually be able to watch the video.
-
+            With E2E encryption broadcasters can even have it that the server can't even decode your video. They will see a stream of bytes pass through, but will not actually be able to watch the video.
           </p>
         </article>
 
-        <article id="browser-streaming-article">
-          Streaming from the browser increases accessibility. The video quality/composition won't be as good, but these voices are important.
+        <article id="browser-streaming">
+          <h3>Browser streaming</h3>
+          <p>
+            Streaming from the browser increases accessibility. The video quality/composition won't be as good, but these voices are important.
+          </p>
 
-          <h4> Everyone can Broadcast </h4>
-          Streaming today requires that you install dedicated software. When configuring your software you have to be aware of things like bitrate, codecs and watch your resource usage.
-          Broadcasting from the browser significantly reduces the barrier of entry to streaming. So many new voices and types of streams will be available when it is opened to more people.
+          <h4>Everyone can broadcast</h4>
+          <p>
+            Streaming today requires that you install dedicated software. When configuring your software you have to be aware of things like bitrate, codecs and watch your resource usage.
+            Broadcasting from the browser significantly reduces the barrier of entry to streaming. So many new voices and types of streams will be available when it is opened to more people.
+          </p>
 
-          <h4> Browser is everywhere </h4>
-          A Web Browser is available everywhere. Phones, TVs, tablets and smart cars etc... this allows you to broadcast from all these places where it wasn't available before.
-          Also many people are using comptures where they aren't able to install additional software. It would be great to enable them to stream even if they don't have root access
-          to the machine.
+          <h4>Browser is everywhere</h4>
+          <p>
+            A web browser is available everywhere. Phones, TVs, tablets and smart cars etc... this allows you to broadcast from all these places where it wasn't available before.
+            Also many people are using computers where they aren't able to install additional software. It would be great to enable them to stream even if they don't have root access
+            to the machine.
+          </p>
         </article>
 
-        <article id="easier-self-hosting-article">
-          WebRTC has quite a few self hosting options. This has happened for a few reasons
+        <article id="easier-self-hosting">
+          <h3>Easier self-hosting</h3>
+          <p>
+            WebRTC has quite a few self-hosting options. This has happened for a few reasons.
+          </p>
 
-          <h4> Wide usage outside of streaming </h4>
-          WebRTC is widely used outside of broadcasting. It is used for robotics, conferencing, 'AI voice assistants' and more.
-          So can benefits from the ecosystem that existed before WebRTC broadcasting.
+          <h4>Wide usage outside of streaming</h4>
+          <p>
+            WebRTC is widely used outside of broadcasting. It is used for robotics, conferencing, "AI voice assistants" and more.
+            So it can benefit from the ecosystem that existed before WebRTC broadcasting.
+          </p>
 
-          <h4> One protocol for publish+playback </h4>
-          If you are using RTMP you have to use another protocol for playback (usually HLS/DASH). With WHIP and WHEP you can use WebRTC for both,
-          which means fewer moving parts to run.
+          <h4>One protocol for publish+playback</h4>
+          <p>
+            If you are using RTMP you have to use another protocol for playback (usually HLS/DASH). With WHIP and WHEP you can use WebRTC for both,
+            which means fewer moving parts to run.
+          </p>
 
-          <h4> Cheaper to run/no transcoding </h4>
-          A WebRTC server justs forwards media packets instead of transcoding the stream. It's a lot easier to deploy/manage/scale because of this.
-
+          <h4>Cheaper to run/no transcoding</h4>
+          <p>
+            A WebRTC server just forwards media packets instead of transcoding the stream. It's a lot easier to deploy/manage/scale because of this.
+          </p>
         </article>
 
-        <article id="codec-flexibility-article">
-          WebRTC does not hardcode video codecs into the protocol. Codecs are negotiated at runtime so other codecs (Like HEVC and AV1) can be trivially added.
-          Custom codecs could also be added if both client/server supported so you can do custom things if you need.
+        <article id="codec-flexibility">
+          <h3>Codec flexibility</h3>
+          <p>
+            WebRTC does not hardcode video codecs into the protocol. Codecs are negotiated at runtime so other codecs (like HEVC and AV1) can be trivially added.
+            Custom codecs could also be added if both client/server supported so you can do custom things if you need.
+          </p>
         </article>
 
-        <article id="e2e-encryption-article">
-          WebRTC provides APIs that lets broadcasters encrypt media and viewers decrypt it so the server has no access to the video. The server can support
-          all different types of clients thanks to Simulcast.
+        <article id="e2e-encryption">
+          <h3>End-to-end encryption</h3>
+          <p>
+            WebRTC provides APIs that lets broadcasters encrypt media and viewers decrypt it so the server has no access to the video. The server can support
+            all different types of clients thanks to simulcast.
+          </p>
 
           <pre class="mermaid">
             flowchart LR
@@ -393,14 +567,13 @@
                 ViewerA[Viewer A]
                 ViewerB[Viewer B]
 
-                Broadcaster <-->|P2P key exchange| ViewerA
-                Broadcaster <-->|P2P key exchange| ViewerB
+                Broadcaster &lt;--&gt;|P2P key exchange| ViewerA
+                Broadcaster &lt;--&gt;|P2P key exchange| ViewerB
                 Broadcaster -->|Encrypted media| Server
                 Server -->|Encrypted media| ViewerA
                 Server -->|Encrypted media| ViewerB
           </pre>
         </article>
-
       </section>
 
       <h2>How can I use WHIP/WHEP?</h2>
@@ -443,30 +616,11 @@
     <script type="module">
       import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.esm.min.mjs'
 
-      mermaid.initialize({ startOnLoad: false })
+      mermaid.initialize({ startOnLoad: false, theme: 'dark' })
 
-      const renderMermaid = async (article) => {
-        const diagrams = article.querySelectorAll('.mermaid:not([data-processed="true"])')
-        if (diagrams.length > 0) {
-          await mermaid.run({ nodes: diagrams })
-        }
-      }
-
-      for (let card of document.getElementsByClassName('card')) {
-        card.onclick = async () => {
-          const clickedArticleElement = document.getElementById(card.id.replace('card', 'article'))
-          for (let article of document.getElementsByTagName('article')) {
-            if (article === clickedArticleElement) {
-              article.classList.toggle('active')
-            } else {
-              article.classList.remove('active')
-            }
-          }
-
-          if (clickedArticleElement.classList.contains('active')) {
-            await renderMermaid(clickedArticleElement)
-          }
-        }
+      const diagrams = document.querySelectorAll('.mermaid')
+      if (diagrams.length > 0) {
+        await mermaid.run({ nodes: diagrams })
       }
     </script>
   </body>
