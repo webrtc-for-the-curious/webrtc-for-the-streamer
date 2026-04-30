@@ -144,6 +144,128 @@
         color: var(--muted);
       }
 
+      .try-it {
+        margin-top: 34px;
+        padding: 24px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: var(--panel);
+      }
+
+      .try-it h2 {
+        margin-top: 0;
+        border-bottom-color: var(--border);
+      }
+
+      .try-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+        gap: 18px;
+        margin-top: 22px;
+      }
+
+      .try-card {
+        min-width: 0;
+        padding: 18px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: var(--panel-highlight);
+      }
+
+      .try-card h3 {
+        margin-bottom: 12px;
+        font-size: 1.1rem;
+      }
+
+      .try-meta {
+        display: grid;
+        gap: 10px;
+        margin: 0;
+        color: var(--muted);
+      }
+
+      .try-meta div {
+        display: grid;
+        gap: 2px;
+      }
+
+      .try-meta code {
+        overflow-wrap: anywhere;
+        color: var(--ink);
+      }
+
+      .try-video {
+        display: block;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        border: 1px solid var(--rule);
+        border-radius: 6px;
+        background: var(--code);
+      }
+
+      .try-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+        margin-top: 14px;
+      }
+
+      .button-link,
+      button.button-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 42px;
+        padding: 0 14px;
+        border: 1px solid var(--accent);
+        border-radius: 6px;
+        background: var(--accent);
+        color: var(--paper);
+        font: inherit;
+        font-weight: 700;
+        line-height: 1;
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      .button-link:hover,
+      .button-link:focus,
+      button.button-link:hover,
+      button.button-link:focus {
+        border-color: var(--accent-hover);
+        background: var(--accent-hover);
+        color: var(--paper);
+      }
+
+      .button-link.secondary {
+        background: transparent;
+        color: var(--accent);
+      }
+
+      .button-link.secondary:hover,
+      .button-link.secondary:focus {
+        background: var(--panel);
+        color: var(--accent-hover);
+      }
+
+      button.button-link:disabled {
+        cursor: wait;
+        opacity: 0.68;
+      }
+
+      .try-status {
+        margin: 12px 0 0;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      .try-note {
+        margin: 16px 0 0;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
       .explanations {
         margin-top: 56px;
       }
@@ -216,6 +338,14 @@
           padding: 16px;
         }
 
+        .try-it {
+          padding: 16px;
+        }
+
+        .try-grid {
+          grid-template-columns: 1fr;
+        }
+
         article {
           padding: 22px 18px 24px;
         }
@@ -243,6 +373,49 @@
           this site is <a href="https://webrtcforthecurious.com">WebRTC for the Curious</a>.
         </p>
       </div>
+
+      <section class="try-it" aria-labelledby="try-it-now">
+        <h2 id="try-it-now">Try it now</h2>
+        <p>
+          This test stream uses the public Broadcast Box instance at <a href="https://b.siobud.com/">b.siobud.com</a>.
+          Publish with the OBS settings below, then watch the WebRTC playback directly on this page.
+        </p>
+        <div class="try-grid">
+          <div class="try-card">
+            <h3>Publish</h3>
+            <div class="try-meta" aria-label="OBS settings">
+              <div>
+                <strong>Service</strong>
+                <code>WHIP</code>
+              </div>
+              <div>
+                <strong>Server</strong>
+                <code>https://b.siobud.com/api/whip</code>
+              </div>
+              <div>
+                <strong>Bearer Token</strong>
+                <code id="try-obs-stream-key">Generating stream key...</code>
+              </div>
+            </div>
+            <p class="try-note">
+              For lower latency in OBS, see
+              <a href="https://github.com/glimesh/broadcast-box#obs-broadcasting">Broadcast Box's OBS broadcasting notes</a>
+              for custom encoder settings.
+            </p>
+          </div>
+          <div class="try-card">
+            <h3>Watch</h3>
+            <video id="try-video" class="try-video" autoplay muted playsinline controls></video>
+            <div class="try-actions">
+              <button class="button-link" id="try-watch" type="button">Watch stream</button>
+              <a class="button-link secondary" id="try-hosted-player" href="https://b.siobud.com/" target="_blank" rel="noopener noreferrer">
+                Watch on b.siobud.com
+              </a>
+            </div>
+            <p class="try-status" id="try-status">Waiting for a broadcast.</p>
+          </div>
+        </div>
+      </section>
 
       <section class="problem-list" aria-labelledby="choose-problem">
         <h2 id="choose-problem">Choose what problem you have</h2>
@@ -638,6 +811,101 @@
         <li><a href="https://stageten.tv/">Stage TEN</a></li>
       </ul>
     </main>
+    <script>
+      (() => {
+        const broadcastBoxURL = 'https://b.siobud.com'
+        const whepURL = `${broadcastBoxURL}/api/whep`
+        const obsStreamKeyOutput = document.getElementById('try-obs-stream-key')
+        const hostedPlayerLink = document.getElementById('try-hosted-player')
+        const watchButton = document.getElementById('try-watch')
+        const video = document.getElementById('try-video')
+        const status = document.getElementById('try-status')
+        let peerConnection
+
+        const generateStreamKey = () => {
+          const bytes = new Uint8Array(11)
+          if (window.crypto && typeof window.crypto.getRandomValues === 'function') {
+            window.crypto.getRandomValues(bytes)
+          } else {
+            for (let index = 0; index < bytes.length; index += 1) {
+              bytes[index] = Math.floor(Math.random() * 256)
+            }
+          }
+
+          return `wfts-${Array.from(bytes, (byte) => byte.toString(16).padStart(2, '0')).join('')}`
+        }
+
+        const setStatus = (message) => {
+          status.textContent = message
+        }
+
+        const streamKey = generateStreamKey()
+        const encodedStreamKey = encodeURIComponent(streamKey)
+        obsStreamKeyOutput.textContent = streamKey
+        hostedPlayerLink.href = `${broadcastBoxURL}/${encodedStreamKey}?cinemaMode=true`
+
+        const closeExistingConnection = () => {
+          if (peerConnection) {
+            peerConnection.close()
+            peerConnection = undefined
+          }
+
+          video.srcObject = null
+        }
+
+        const watchStream = async () => {
+          closeExistingConnection()
+          watchButton.disabled = true
+          setStatus('Connecting to b.siobud.com...')
+
+          try {
+            const currentConnection = new RTCPeerConnection()
+            peerConnection = currentConnection
+            currentConnection.addTransceiver('audio', { direction: 'recvonly' })
+            currentConnection.addTransceiver('video', { direction: 'recvonly' })
+
+            currentConnection.ontrack = (event) => {
+              video.srcObject = event.streams[0]
+              setStatus('Playing the live stream.')
+            }
+
+            currentConnection.oniceconnectionstatechange = () => {
+              setStatus(`Connection state: ${currentConnection.iceConnectionState}`)
+            }
+
+            const offer = await currentConnection.createOffer()
+            await currentConnection.setLocalDescription(offer)
+
+            const response = await fetch(whepURL, {
+              method: 'POST',
+              body: offer.sdp,
+              headers: {
+                Authorization: `Bearer ${streamKey}`,
+                'Content-Type': 'application/sdp'
+              }
+            })
+
+            if (!response.ok) {
+              throw new Error(`WHEP request failed with HTTP ${response.status}`)
+            }
+
+            const answer = await response.text()
+            await currentConnection.setRemoteDescription({
+              sdp: answer,
+              type: 'answer'
+            })
+          } catch (error) {
+            closeExistingConnection()
+            const message = error instanceof Error ? error.message : 'Unable to connect'
+            setStatus(`${message}. Start a broadcast, then try again.`)
+          } finally {
+            watchButton.disabled = false
+          }
+        }
+
+        watchButton.addEventListener('click', watchStream)
+      })()
+    </script>
     <script type="module">
       import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.esm.min.mjs'
 
