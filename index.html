@@ -103,47 +103,6 @@
         font-size: 0.96rem;
       }
 
-      .problem-list {
-        margin-top: 34px;
-        padding: 24px;
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        background: var(--panel);
-      }
-
-      .problem-list h2 {
-        margin-top: 0;
-        border-bottom-color: var(--border);
-      }
-
-      .problem-list ul {
-        display: grid;
-        gap: 0;
-        margin: 18px 0 0;
-        padding: 0;
-        list-style: none;
-      }
-
-      .problem-list li {
-        padding: 14px 0;
-        border-top: 1px solid var(--border);
-      }
-
-      .problem-list li:first-child {
-        border-top: 0;
-        padding-top: 0;
-      }
-
-      .problem-list a {
-        font-weight: 700;
-      }
-
-      .problem-list span {
-        display: block;
-        margin-top: 2px;
-        color: var(--muted);
-      }
-
       .try-it {
         margin-top: 34px;
         padding: 24px;
@@ -347,6 +306,45 @@
         font-size: 0.95rem;
       }
 
+      .use-case-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+        margin-top: 22px;
+      }
+
+      .use-case-card {
+        display: flex;
+        flex-direction: column;
+        padding: 24px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: var(--panel);
+      }
+
+      .use-case-card h3 {
+        margin-top: 0;
+        margin-bottom: 12px;
+        font-size: 1.2rem;
+      }
+
+      .use-case-card p {
+        margin-bottom: 16px;
+        font-size: 0.95rem;
+        flex-grow: 1;
+      }
+
+      .use-case-card .cta {
+        font-weight: 700;
+        font-size: 0.9rem;
+      }
+
+      @media (max-width: 860px) {
+        .use-case-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
       .explanations {
         margin-top: 56px;
       }
@@ -415,10 +413,6 @@
           font-size: 1.35rem;
         }
 
-        .problem-list {
-          padding: 16px;
-        }
-
         .try-it {
           padding: 16px;
         }
@@ -455,114 +449,64 @@
         </p>
       </div>
 
-      <section class="try-it" aria-labelledby="try-it-now">
-        <h2 id="try-it-now">Try it now</h2>
-        <p>
-          This test stream uses the public Broadcast Box instance at <a href="https://b.siobud.com/">b.siobud.com</a>.
-          Publish from this browser or OBS, then watch the WebRTC playback directly on this page or on <a href="https://b.siobud.com/">b.siobud.com</a>.
-          You can share the <a href="https://b.siobud.com/">b.siobud.com</a> watch link with others.
-        </p>
-        <div class="try-grid">
-          <div class="try-card">
-            <h3>Publish</h3>
-            <div class="publish-tabs" role="tablist" aria-label="Publish method">
-              <button class="publish-tab" id="try-browser-tab" type="button" role="tab" aria-selected="true" aria-controls="try-browser-panel">
-                Browser
-              </button>
-              <button class="publish-tab" id="try-obs-tab" type="button" role="tab" aria-selected="false" aria-controls="try-obs-panel">
-                OBS
-              </button>
-            </div>
-
-            <div class="publish-panel" id="try-browser-panel" role="tabpanel" aria-labelledby="try-browser-tab">
-              <video id="try-publish-preview" class="try-video publish-preview" autoplay muted playsinline></video>
-              <div class="try-actions">
-                <button class="button-link" id="try-publish-screen" type="button">Publish screen</button>
-                <button class="button-link secondary" id="try-publish-webcam" type="button">Publish webcam</button>
-                <button class="button-link secondary" id="try-stop-publish" type="button" disabled>Stop</button>
-              </div>
-              <p class="try-status" id="try-publish-status">Not publishing.</p>
-            </div>
-
-            <div class="publish-panel" id="try-obs-panel" role="tabpanel" aria-labelledby="try-obs-tab" hidden>
-              <div class="try-meta" aria-label="OBS settings">
-                <div>
-                  <strong>Service</strong>
-                  <code>WHIP</code>
-                </div>
-                <div>
-                  <strong>Server</strong>
-                  <code>https://b.siobud.com/api/whip</code>
-                </div>
-                <div>
-                  <strong>Bearer Token</strong>
-                  <div class="token-field">
-                    <code id="try-obs-stream-key">Generating stream key...</code>
-                    <button class="copy-token" id="try-copy-token" type="button">Copy</button>
-                  </div>
-                </div>
-              </div>
-              <p class="try-note">
-                For lower latency in OBS, see
-                <a href="https://github.com/glimesh/broadcast-box#obs-broadcasting">Broadcast Box's OBS broadcasting notes</a>
-                for custom encoder settings.
-              </p>
+      <section class="use-cases" aria-labelledby="streaming-can-be-better">
+        <h2 id="streaming-can-be-better">Streaming can be better</h2>
+        <div class="use-case-grid">
+          <div class="use-case-card">
+            <h3>Livestreamer</h3>
+            <p>
+              Standard streaming has a 5-10 second delay. WebRTC lets you talk to your chat in real-time with sub-second latency and better quality.
+            </p>
+            <div class="cta">
+              <a href="#interactive-latency">Interact instantly &rarr;</a>
             </div>
           </div>
-          <div class="try-card">
-            <h3>Watch</h3>
-            <video id="try-video" class="try-video" autoplay muted playsinline controls></video>
-            <div class="try-actions">
-              <button class="button-link" id="try-watch" type="button">Watch stream</button>
-              <a class="button-link secondary" id="try-hosted-player" href="https://b.siobud.com/" target="_blank" rel="noopener noreferrer">
-                Watch on b.siobud.com
-              </a>
+          <div class="use-case-card">
+            <h3>Gamer</h3>
+            <p>
+              Discord and Twitch streams often desync by seconds. WebRTC ensures everyone sees the same frame at the same time for watch parties.
+            </p>
+            <div class="cta">
+              <a href="#interactive-latency">Sync your watch party &rarr;</a>
             </div>
-            <p class="try-status" id="try-status">Waiting for a broadcast.</p>
+          </div>
+          <div class="use-case-card">
+            <h3>Privacy focused</h3>
+            <p>
+              Stop relying on big platforms. Use End-to-End Encryption (E2E) to ensure only you and your viewers can see your media.
+            </p>
+            <div class="cta">
+              <a href="#e2e-encryption">Secure your stream &rarr;</a>
+            </div>
+          </div>
+          <div class="use-case-card">
+            <h3>Self Hosting</h3>
+            <p>
+              Ditch the complex setups. WebRTC allows you to use one protocol for both publishing and playback, making self-hosting simpler than ever.
+            </p>
+            <div class="cta">
+              <a href="#easier-self-hosting">Host your own &rarr;</a>
+            </div>
+          </div>
+          <div class="use-case-card">
+            <h3>Streaming on the Go</h3>
+            <p>
+              Stay live even on the move. WebRTC handles packet loss and network switches seamlessly, making it perfect for streaming over cellular or satellite connections.
+            </p>
+            <div class="cta">
+              <a href="#stream-on-bad-networks">Stream reliably &rarr;</a>
+            </div>
+          </div>
+          <div class="use-case-card">
+            <h3>Anyone can stream</h3>
+            <p>
+              No downloads required. Use your browser to start streaming immediately, lowering the barrier for new voices and creators everywhere.
+            </p>
+            <div class="cta">
+              <a href="#browser-streaming">Open your browser &rarr;</a>
+            </div>
           </div>
         </div>
-      </section>
-
-      <section class="problem-list" aria-labelledby="choose-problem">
-        <h2 id="choose-problem">Choose what problem you have</h2>
-        <p>
-          Start with the problem that matches your stream. These are normal sections below, so you can skim the whole page
-          or send someone a direct link.
-        </p>
-        <ul>
-          <li>
-            <a href="#interactive-latency">I need chat, co-streaming, or watch parties to feel live.</a>
-            <span>Use WebRTC when sub-second latency changes the experience.</span>
-          </li>
-          <li>
-            <a href="#stream-on-bad-networks">I stream from unstable networks.</a>
-            <span>Use WebRTC when you need better control over loss, delay, and network changes.</span>
-          </li>
-          <li>
-            <a href="#networking-flexibility">I want more control over how viewers receive the stream.</a>
-            <span>Use WebRTC for peer-to-peer, client/server, or hybrid distribution.</span>
-          </li>
-          <li>
-            <a href="#simulcast">I need multiple quality levels without server transcoding.</a>
-            <span>Use simulcast when the broadcaster can upload several qualities directly.</span>
-          </li>
-          <li>
-            <a href="#browser-streaming">I want people to broadcast from a browser.</a>
-            <span>Use WHIP when installing dedicated software is too much friction.</span>
-          </li>
-          <li>
-            <a href="#easier-self-hosting">I want self-hosting to have fewer moving parts.</a>
-            <span>Use WHIP/WHEP when one protocol for publishing and playback is useful.</span>
-          </li>
-          <li>
-            <a href="#codec-flexibility">I care about codec choice.</a>
-            <span>Use WebRTC when runtime codec negotiation matters.</span>
-          </li>
-          <li>
-            <a href="#e2e-encryption">I need the server to avoid seeing the video.</a>
-            <span>Use end-to-end media encryption for streams where privacy matters.</span>
-          </li>
-        </ul>
       </section>
 
       <section class="explanations" aria-label="Why use WHIP/WHEP">
@@ -878,6 +822,74 @@
                 Server -->|Encrypted media| ViewerB
           </pre>
         </article>
+      </section>
+
+      <section class="try-it" aria-labelledby="try-it-now">
+        <h2 id="try-it-now">Try it now</h2>
+        <p>
+          This test stream uses the public Broadcast Box instance at <a href="https://b.siobud.com/">b.siobud.com</a>.
+          Publish from this browser or OBS, then watch the WebRTC playback directly on this page or on <a href="https://b.siobud.com/">b.siobud.com</a>.
+          You can share the <a href="https://b.siobud.com/">b.siobud.com</a> watch link with others.
+        </p>
+        <div class="try-grid">
+          <div class="try-card">
+            <h3>Publish</h3>
+            <div class="publish-tabs" role="tablist" aria-label="Publish method">
+              <button class="publish-tab" id="try-browser-tab" type="button" role="tab" aria-selected="true" aria-controls="try-browser-panel">
+                Browser
+              </button>
+              <button class="publish-tab" id="try-obs-tab" type="button" role="tab" aria-selected="false" aria-controls="try-obs-panel">
+                OBS
+              </button>
+            </div>
+
+            <div class="publish-panel" id="try-browser-panel" role="tabpanel" aria-labelledby="try-browser-tab">
+              <video id="try-publish-preview" class="try-video publish-preview" autoplay muted playsinline></video>
+              <div class="try-actions">
+                <button class="button-link" id="try-publish-screen" type="button">Publish screen</button>
+                <button class="button-link secondary" id="try-publish-webcam" type="button">Publish webcam</button>
+                <button class="button-link secondary" id="try-stop-publish" type="button" disabled>Stop</button>
+              </div>
+              <p class="try-status" id="try-publish-status">Not publishing.</p>
+            </div>
+
+            <div class="publish-panel" id="try-obs-panel" role="tabpanel" aria-labelledby="try-obs-tab" hidden>
+              <div class="try-meta" aria-label="OBS settings">
+                <div>
+                  <strong>Service</strong>
+                  <code>WHIP</code>
+                </div>
+                <div>
+                  <strong>Server</strong>
+                  <code>https://b.siobud.com/api/whip</code>
+                </div>
+                <div>
+                  <strong>Bearer Token</strong>
+                  <div class="token-field">
+                    <code id="try-obs-stream-key">Generating stream key...</code>
+                    <button class="copy-token" id="try-copy-token" type="button">Copy</button>
+                  </div>
+                </div>
+              </div>
+              <p class="try-note">
+                For lower latency in OBS, see
+                <a href="https://github.com/glimesh/broadcast-box#obs-broadcasting">Broadcast Box's OBS broadcasting notes</a>
+                for custom encoder settings.
+              </p>
+            </div>
+          </div>
+          <div class="try-card">
+            <h3>Watch</h3>
+            <video id="try-video" class="try-video" autoplay muted playsinline controls></video>
+            <div class="try-actions">
+              <button class="button-link" id="try-watch" type="button">Watch stream</button>
+              <a class="button-link secondary" id="try-hosted-player" href="https://b.siobud.com/" target="_blank" rel="noopener noreferrer">
+                Watch on b.siobud.com
+              </a>
+            </div>
+            <p class="try-status" id="try-status">Waiting for a broadcast.</p>
+          </div>
+        </div>
       </section>
 
       <h2>How can I use WHIP/WHEP?</h2>
