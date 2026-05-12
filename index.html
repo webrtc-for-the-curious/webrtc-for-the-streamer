@@ -48,12 +48,6 @@
             </p>
           </div>
           <div class="use-case-card">
-            <h3><a href="#easier-self-hosting">Self Hosted</a></h3>
-            <p>
-              WebRTC uses one protocol for publishing and playback. Since WebRTC is widely used outside of streaming, lots of open source servers already exist.
-            </p>
-          </div>
-          <div class="use-case-card">
             <h3><a href="#browser-streaming">Everyone Streams</a></h3>
             <p>
               WebRTC can publish from a web browser directly, no download necessary. Makes it easier to convince a friend to stream or bring entirely
@@ -61,15 +55,21 @@
             </p>
           </div>
           <div class="use-case-card">
-            <h3><a href="#stream-on-bad-networks">Stream Anywhere</a></h3>
-            <p>
-              Stream on cellular, satellite, or bad Wi-Fi. WebRTC is designed to adapt to changing network conditions.
-            </p>
-          </div>
-          <div class="use-case-card">
             <h3><a href="#codec-flexibility">Higher Quality</a></h3>
             <p>
               WebRTC supports modern audio and video codecs like AV1, which can deliver about 30% better quality at the same bitrate.
+            </p>
+          </div>
+          <div class="use-case-card nerd-mode">
+            <h3><a href="#easier-self-hosting">Self Hosted</a></h3>
+            <p>
+              WebRTC uses one protocol for publishing and playback. Since WebRTC is widely used outside of streaming, lots of open source servers already exist.
+            </p>
+          </div>
+          <div class="use-case-card nerd-mode">
+            <h3><a href="#stream-on-bad-networks">Stream Anywhere</a></h3>
+            <p>
+              Stream on cellular, satellite, or bad Wi-Fi. WebRTC is designed to adapt to changing network conditions.
             </p>
           </div>
         </div>
@@ -125,7 +125,7 @@
           </pre>
         </article>
 
-        <article id="easier-self-hosting">
+        <article id="easier-self-hosting" class="nerd-mode">
           <h3>Self Hosted</h3>
           <p>
             WebRTC has quite a few self-hosting options. This has happened for a few reasons.
@@ -156,7 +156,7 @@
             desktop computer on fiber can support 2160p. With simulcast the broadcaster generates and uploads all quality levels.
             The server then forwards the video feeds appropriately.
             </p>
-            <pre class="mermaid">
+            <pre class="mermaid nerd-mode">
             flowchart LR
                 A[OBS/FFmpeg]
                 B[Server]
@@ -229,7 +229,7 @@
           </p>
         </article>
 
-        <article id="stream-on-bad-networks">
+        <article id="stream-on-bad-networks" class="nerd-mode">
           <h3>Stream Anywhere</h3>
           <p>
             WebRTC gives a lot of flexibility in how you can stream. You can configure it to have the lowest latency possible (at the expense of video quality)
