@@ -25,10 +25,87 @@ body {
   line-height: 1.6;
 }
 
+.nerd-mode-control {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 10;
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+  min-height: 42px;
+  box-sizing: border-box;
+  padding: 0 14px 0 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--ink);
+  box-shadow: 0 10px 30px rgb(0 0 0 / 0.28);
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  user-select: none;
+}
+
+.nerd-mode-control:hover,
+.nerd-mode-control:focus-within {
+  border-color: var(--accent);
+  color: var(--accent-hover);
+}
+
+.nerd-mode-control input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.nerd-mode-switch {
+  position: relative;
+  width: 38px;
+  height: 22px;
+  box-sizing: border-box;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: var(--code);
+  transition: border-color 160ms ease, background 160ms ease;
+}
+
+.nerd-mode-switch::before {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--muted);
+  content: "";
+  transition: background 160ms ease, transform 160ms ease;
+}
+
+.nerd-mode-control input:checked + .nerd-mode-switch {
+  border-color: var(--accent);
+  background: var(--panel-highlight);
+}
+
+.nerd-mode-control input:checked + .nerd-mode-switch::before {
+  background: var(--accent);
+  transform: translateX(16px);
+}
+
+.nerd-mode-control input:focus-visible + .nerd-mode-switch {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+body:not(.nerd-mode) .nerd-mode {
+  display: none;
+}
+
 main {
   max-width: 860px;
   margin: 0 auto;
-  padding: 40px 22px 64px;
+  padding: 72px 22px 64px;
 }
 
 h1,
@@ -321,6 +398,15 @@ button.button-link:disabled {
   font-size: 1.2rem;
 }
 
+.use-case-card h3 a {
+  color: inherit;
+}
+
+.use-case-card h3 a:hover,
+.use-case-card h3 a:focus {
+  color: var(--accent-hover);
+}
+
 .use-case-card p {
   margin-bottom: 16px;
   font-size: 0.95rem;
@@ -395,7 +481,7 @@ pre {
 
 @media (max-width: 640px) {
   main {
-    padding: 28px 18px 48px;
+    padding: 72px 18px 48px;
   }
 
   h1 {

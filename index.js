@@ -7,6 +7,7 @@ const browserTab = document.getElementById('try-browser-tab')
 const obsTab = document.getElementById('try-obs-tab')
 const browserPanel = document.getElementById('try-browser-panel')
 const obsPanel = document.getElementById('try-obs-panel')
+const nerdModeToggle = document.getElementById('nerd-mode-toggle')
 const obsStreamKeyOutput = document.getElementById('try-obs-stream-key')
 const copyTokenButton = document.getElementById('try-copy-token')
 const publishScreenButton = document.getElementById('try-publish-screen')
@@ -42,6 +43,45 @@ const setStatus = (message) => {
 
 const setPublishStatus = (message) => {
   publishStatus.textContent = message
+}
+
+const setNerdMode = (isEnabled) => {
+  document.body.classList.toggle('nerd-mode', isEnabled)
+}
+
+const isNerdModeContent = (element) => {
+  for (let current = element; current && current !== document.body; current = current.parentElement) {
+    if (current.classList.contains('nerd-mode')) {
+      return true
+    }
+  }
+
+  return false
+}
+
+const renderMermaidDiagrams = async (diagrams) => {
+  const pendingDiagrams = diagrams.filter((diagram) => diagram.dataset.processed !== 'true')
+  if (pendingDiagrams.length > 0) {
+    await mermaid.run({ nodes: pendingDiagrams })
+  }
+}
+
+const renderNerdModeDiagrams = async () => {
+  await new Promise((resolve) => window.requestAnimationFrame(resolve))
+  if (!document.body.classList.contains('nerd-mode')) {
+    return
+  }
+
+  const diagrams = Array.from(document.querySelectorAll('.mermaid')).filter(isNerdModeContent)
+  await renderMermaidDiagrams(diagrams)
+}
+
+const updateNerdMode = async () => {
+  const isEnabled = nerdModeToggle.checked
+  setNerdMode(isEnabled)
+  if (isEnabled) {
+    await renderNerdModeDiagrams()
+  }
 }
 
 const streamKey = generateStreamKey()
@@ -250,7 +290,8 @@ stopPublishButton.addEventListener('click', () => stopBrowserPublish())
 
 mermaid.initialize({ startOnLoad: false, theme: 'dark' })
 
-const diagrams = document.querySelectorAll('.mermaid')
-if (diagrams.length > 0) {
-  await mermaid.run({ nodes: diagrams })
-}
+const diagrams = Array.from(document.querySelectorAll('.mermaid'))
+await renderMermaidDiagrams(diagrams.filter((diagram) => !isNerdModeContent(diagram)))
+
+nerdModeToggle.addEventListener('change', updateNerdMode)
+await updateNerdMode()

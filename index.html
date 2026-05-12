@@ -7,17 +7,21 @@
     <link rel="stylesheet" href="index.css">
   </head>
   <body>
+    <label class="nerd-mode-control" for="nerd-mode-toggle">
+      <input id="nerd-mode-toggle" type="checkbox">
+      <span class="nerd-mode-switch" aria-hidden="true"></span>
+      <span>Nerd Mode</span>
+    </label>
+
     <main>
       <div class="intro">
         <h1>WebRTC for the Streamer</h1>
         <p>
-          We wrote this site to explain/share the ways that we believe WebRTC (WHIP/WHEP) can improve streaming. Things like improving quality,
-          making it easier to self-host and reducing latency. Some of these changes may only benefit a niche of streamers, but to those streamers it is a
-          dramatic improvement.
+          We wrote this site to explain/share the ways that we believe WebRTC (WHIP/WHEP) can improve streaming.
         </p>
         <p>
-          These patterns and concepts are available in other protocols (RTMP, SRT, RTSP, HLS, MoQ, RIST). The protocol itself isn't the important part.
-          We would just like streamers to know that these things are possible. These improvements can change so many things around streaming for the better.
+          These things are available in other protocols (SRT, MoQ, RIST). The protocol itself isn't the important part. We
+          would just like streamers to know what is possible. These improvements can change so many things around streaming for the better.
         </p>
         <p class="byline">
           <i>WebRTC for the Streamer</i> was written by the developers who added
@@ -32,40 +36,40 @@
         <h2 id="streaming-can-be-better">Streaming can be better.... <a href="#try-it-now">Try it Now!</a></h2>
         <div class="use-case-grid">
           <div class="use-case-card">
-            <h3>Speed</h3>
+            <h3><a href="#interactive-latency">Speed</a></h3>
             <p>
               WebRTC has ~200ms of latency. Interact with your viewers and friends like a video call. Everything is more connected and fun.
             </p>
           </div>
           <div class="use-case-card">
-            <h3>Privacy</h3>
+            <h3><a href="#e2e-encryption">Privacy</a></h3>
             <p>
               WebRTC has End-to-End Encryption (E2E). When enabled, servers can't watch or tamper with your stream. Only end users can decrypt it.
             </p>
           </div>
           <div class="use-case-card">
-            <h3>Self Hosted</h3>
+            <h3><a href="#easier-self-hosting">Self Hosted</a></h3>
             <p>
               WebRTC uses one protocol for publishing and playback. Since WebRTC is widely used outside of streaming, lots of open source servers already exist.
             </p>
           </div>
           <div class="use-case-card">
-            <h3>Everyone Streams</h3>
+            <h3><a href="#browser-streaming">Everyone Streams</a></h3>
             <p>
               WebRTC can publish from a web browser directly, no download necessary. Makes it easier to convince a friend to stream or bring entirely
               new types of people into streaming that couldn't do it before.
             </p>
           </div>
           <div class="use-case-card">
-            <h3>Stream Anywhere</h3>
+            <h3><a href="#stream-on-bad-networks">Stream Anywhere</a></h3>
             <p>
               Stream on cellular, satellite, or bad Wi-Fi. WebRTC is designed to adapt to changing network conditions.
             </p>
           </div>
           <div class="use-case-card">
-            <h3>Higher Quality</h3>
+            <h3><a href="#codec-flexibility">Higher Quality</a></h3>
             <p>
-              WebRTC supports modern audio and video codecs, so streams can look and sound better without requiring more bitrate.
+              WebRTC supports modern audio and video codecs like AV1, which can deliver about 30% better quality at the same bitrate.
             </p>
           </div>
         </div>
@@ -73,7 +77,7 @@
 
       <section class="explanations" aria-label="Why use WHIP/WHEP">
         <article id="interactive-latency">
-          <h3>Interactive latency</h3>
+          <h3>Speed</h3>
           <p>
             With WebRTC you get sub-500ms latency, you will get the experience of a video call. Having this latency can change the dynamics of streaming.
           </p>
@@ -99,8 +103,134 @@
           </p>
         </article>
 
+        <article id="e2e-encryption">
+          <h3>Privacy</h3>
+          <p>
+            WebRTC provides APIs that lets broadcasters encrypt media and viewers decrypt it so the server has no access to the video. The server can support
+            all different types of clients thanks to simulcast.
+          </p>
+
+          <pre class="mermaid nerd-mode">
+            flowchart LR
+                Broadcaster[Broadcaster]
+                Server[WebRTC Server]
+                ViewerA[Viewer A]
+                ViewerB[Viewer B]
+
+                Broadcaster &lt;--&gt;|P2P key exchange| ViewerA
+                Broadcaster &lt;--&gt;|P2P key exchange| ViewerB
+                Broadcaster -->|Encrypted media| Server
+                Server -->|Encrypted media| ViewerA
+                Server -->|Encrypted media| ViewerB
+          </pre>
+        </article>
+
+        <article id="easier-self-hosting">
+          <h3>Self Hosted</h3>
+          <p>
+            WebRTC has quite a few self-hosting options. This has happened for a few reasons.
+          </p>
+
+          <h4>Wide usage outside of streaming</h4>
+          <p>
+            WebRTC is widely used outside of broadcasting. It is used for robotics, conferencing, "AI voice assistants" and more.
+            So it can benefit from the ecosystem that existed before WebRTC broadcasting.
+          </p>
+
+          <h4>One protocol for publish+playback</h4>
+          <p>
+            If you are using RTMP you have to use another protocol for playback (usually HLS/DASH). With WHIP and WHEP you can use WebRTC for both,
+            which means fewer moving parts to run.
+          </p>
+
+          <h4>Cheaper to run/no transcoding</h4>
+          <p>
+            A WebRTC server just forwards media packets instead of transcoding the stream. It's a lot easier to deploy/manage/scale because of this.
+          </p>
+
+
+          <div class="nerd-mode">
+            <h4>Simulcast</h4>
+            <p>
+            When streaming video you will need to support different types of users. A phone on 5G works best with 1080p while a
+            desktop computer on fiber can support 2160p. With simulcast the broadcaster generates and uploads all quality levels.
+            The server then forwards the video feeds appropriately.
+            </p>
+            <pre class="mermaid">
+            flowchart LR
+                A[OBS/FFmpeg]
+                B[Server]
+                C[Viewer]
+                D[Viewer]
+                E[Viewer]
+                A --> |2160p|B
+                A --> |1440p|B
+                A --> |1080p|B
+                B --> |2160p|C
+                B --> |1440p|D
+                B --> |1080p|E
+
+            linkStyle 0,3 stroke: red
+            linkStyle 1,4 stroke: green
+            linkStyle 2,5 stroke: blue
+            </pre>
+            <p>
+            Traditionally with broadcast software you would upload the 2160p feed, and the server would transcode
+            down to the other layers. WebRTC's approach to this problem has a few benefits.
+            </p>
+
+            <h4>Better quality</h4>
+            <p>
+            A 1080p video stream generated via transcoding will not have the same quality as one generated in OBS directly. Transcoding suffers from generational loss.
+            When video is decoded and re-encoded additional compression artifacts and loss of detail will happen. With simulcast you only encode once.
+            </p>
+
+            <h4>More control</h4>
+            <p>
+            When doing transcodes you only control the encoding quality of one stream. With simulcast you can ensure all your video streams are high quality.
+            </p>
+
+            <h4>Lower latency</h4>
+            <p>
+            Transcoding adds additional latency. Running an additional decode + encode for your transcoded feeds means they will have a different latency than your
+            uploaded feed. With simulcast all your feeds run at the same latency.
+            </p>
+
+            <h4>Simpler servers</h4>
+            <p>
+            Running servers without transcoding is much easier. Transcoding requires a lot of computing power, while simulcast just means extra upload traffic.
+            </p>
+
+            <h4>No tampering/ad insertion</h4>
+            <p>
+            Simulcast means you pass through video feeds untampered. If the server is re-encoding your video it can insert watermarks/ads or modify the video in unexpected ways.
+            With E2E encryption broadcasters can even have it that the server can't even decode your video. They will see a stream of bytes pass through, but will not actually be able to watch the video.
+            </p>
+          </div>
+        </article>
+
+        <article id="browser-streaming">
+          <h3>Everyone Streams</h3>
+          <p>
+            Streaming from the browser increases accessibility. The video quality/composition won't be as good, but these voices are important.
+          </p>
+
+          <h4>Everyone can broadcast</h4>
+          <p>
+            Streaming today requires that you install dedicated software. When configuring your software you have to be aware of things like bitrate, codecs and watch your resource usage.
+            Broadcasting from the browser significantly reduces the barrier of entry to streaming. So many new voices and types of streams will be available when it is opened to more people.
+          </p>
+
+          <h4>Browser is everywhere</h4>
+          <p>
+            A web browser is available everywhere. Phones, TVs, tablets and smart cars etc... this allows you to broadcast from all these places where it wasn't available before.
+            Also many people are using computers where they aren't able to install additional software. It would be great to enable them to stream even if they don't have root access
+            to the machine.
+          </p>
+        </article>
+
         <article id="stream-on-bad-networks">
-          <h3>Stream on bad networks</h3>
+          <h3>Stream Anywhere</h3>
           <p>
             WebRTC gives a lot of flexibility in how you can stream. You can configure it to have the lowest latency possible (at the expense of video quality)
             or you can run it over TCP and have perfect video quality but higher latency. These are some of the knobs that WebRTC gives you.
@@ -123,7 +253,7 @@
             This is a simplified example. Broadcasting software starts at 1080p and tries to upgrade to 2160p. If that results in a bad experience it drops back to 1080p. WebRTC provides the
             receiver feedback needed to make these decisions.
           </p>
-          <pre class="mermaid">
+          <pre class="mermaid nerd-mode">
             sequenceDiagram
                 OBS->>Server: Sending 1080p
                 Server-->>OBS: Zero Packet Loss, 50ms trip time
@@ -138,7 +268,7 @@
             Forward error correction allows you to send redundancy/duplicated info ahead of time so packet loss has no impact on the stream. It consumes extra bandwidth, but is a great solution
             if you are running over satellite/cellular and have bandwidth available but are combating packet loss.
           </p>
-          <pre class="mermaid">
+          <pre class="mermaid nerd-mode">
             flowchart TD
                 subgraph Sender
                     A[Video Frame A]
@@ -173,7 +303,7 @@
             This is a good fit when packet loss is small and the stream still has time to repair the frame. It uses less bandwidth than FEC, but if
             the network is already too delayed the resent packet might arrive too late to be useful.
           </p>
-          <pre class="mermaid">
+          <pre class="mermaid nerd-mode">
             sequenceDiagram
                 participant OBS
                 participant Server
@@ -201,189 +331,15 @@
           </p>
         </article>
 
-        <article id="networking-flexibility">
-          <h3>Networking flexibility</h3>
-          <p>
-            WebRTC can be used as a peer-to-peer or client/server protocol. You can even do a hybrid mesh so publishers upload to a server, but viewers
-            distribute to each other.
-          </p>
-
-          <h4>Peer-to-peer</h4>
-          <pre class="mermaid">
-            flowchart LR
-                Broadcaster[Broadcaster]
-                ViewerA[Viewer A]
-                ViewerB[Viewer B]
-                ViewerC[Viewer C]
-
-                Broadcaster -->|WebRTC media| ViewerA
-                Broadcaster -->|WebRTC media| ViewerB
-                Broadcaster -->|WebRTC media| ViewerC
-          </pre>
-
-          <h4>Client/server</h4>
-          <pre class="mermaid">
-            flowchart LR
-                Broadcaster[Broadcaster]
-                Server[WebRTC Server]
-                ViewerA[Viewer A]
-                ViewerB[Viewer B]
-                ViewerC[Viewer C]
-
-                Broadcaster -->|Upload once| Server
-                Server -->|Forward media| ViewerA
-                Server -->|Forward media| ViewerB
-                Server -->|Forward media| ViewerC
-          </pre>
-
-          <h4>Hybrid mesh</h4>
-          <pre class="mermaid">
-            flowchart LR
-                Broadcaster[Broadcaster]
-                Server[WebRTC Server]
-                ViewerA[Viewer A]
-                ViewerB[Viewer B]
-                ViewerC[Viewer C]
-
-                Broadcaster -->|Upload once| Server
-                Server -->|Seed media| ViewerA
-                ViewerA -->|Relay media| ViewerB
-                ViewerA -->|Relay media| ViewerC
-          </pre>
-        </article>
-
-        <article id="simulcast">
-          <h3>Simulcast</h3>
-          <p>
-            When streaming video you will need to support different types of users. A phone on 5G works best with 1080p while a
-            desktop computer on fiber can support 2160p. With simulcast the broadcaster generates and uploads all quality levels.
-            The server then forwards the video feeds appropriately.
-          </p>
-          <pre class="mermaid">
-            flowchart LR
-                A[OBS/FFmpeg]
-                B[Server]
-                C[Viewer]
-                D[Viewer]
-                E[Viewer]
-                A --> |2160p|B
-                A --> |1440p|B
-                A --> |1080p|B
-                B --> |2160p|C
-                B --> |1440p|D
-                B --> |1080p|E
-
-            linkStyle 0,3 stroke: red
-            linkStyle 1,4 stroke: green
-            linkStyle 2,5 stroke: blue
-          </pre>
-          <p>
-            Traditionally with broadcast software you would upload the 2160p feed, and the server would transcode
-            down to the other layers. WebRTC's approach to this problem has a few benefits.
-          </p>
-
-          <h4>Better quality</h4>
-          <p>
-            A 1080p video stream generated via transcoding will not have the same quality as one generated in OBS directly. Transcoding suffers from generational loss.
-            When video is decoded and re-encoded additional compression artifacts and loss of detail will happen. With simulcast you only encode once.
-          </p>
-
-          <h4>More control</h4>
-          <p>
-            When doing transcodes you only control the encoding quality of one stream. With simulcast you can ensure all your video streams are high quality.
-          </p>
-
-          <h4>Lower latency</h4>
-          <p>
-            Transcoding adds additional latency. Running an additional decode + encode for your transcoded feeds means they will have a different latency than your
-            uploaded feed. With simulcast all your feeds run at the same latency.
-          </p>
-
-          <h4>Simpler servers</h4>
-          <p>
-            Running servers without transcoding is much easier. Transcoding requires a lot of computing power, while simulcast just means extra upload traffic.
-          </p>
-
-          <h4>No tampering/ad insertion</h4>
-          <p>
-            Simulcast means you pass through video feeds untampered. If the server is re-encoding your video it can insert watermarks/ads or modify the video in unexpected ways.
-            With E2E encryption broadcasters can even have it that the server can't even decode your video. They will see a stream of bytes pass through, but will not actually be able to watch the video.
-          </p>
-        </article>
-
-        <article id="browser-streaming">
-          <h3>Browser streaming</h3>
-          <p>
-            Streaming from the browser increases accessibility. The video quality/composition won't be as good, but these voices are important.
-          </p>
-
-          <h4>Everyone can broadcast</h4>
-          <p>
-            Streaming today requires that you install dedicated software. When configuring your software you have to be aware of things like bitrate, codecs and watch your resource usage.
-            Broadcasting from the browser significantly reduces the barrier of entry to streaming. So many new voices and types of streams will be available when it is opened to more people.
-          </p>
-
-          <h4>Browser is everywhere</h4>
-          <p>
-            A web browser is available everywhere. Phones, TVs, tablets and smart cars etc... this allows you to broadcast from all these places where it wasn't available before.
-            Also many people are using computers where they aren't able to install additional software. It would be great to enable them to stream even if they don't have root access
-            to the machine.
-          </p>
-        </article>
-
-        <article id="easier-self-hosting">
-          <h3>Easier self-hosting</h3>
-          <p>
-            WebRTC has quite a few self-hosting options. This has happened for a few reasons.
-          </p>
-
-          <h4>Wide usage outside of streaming</h4>
-          <p>
-            WebRTC is widely used outside of broadcasting. It is used for robotics, conferencing, "AI voice assistants" and more.
-            So it can benefit from the ecosystem that existed before WebRTC broadcasting.
-          </p>
-
-          <h4>One protocol for publish+playback</h4>
-          <p>
-            If you are using RTMP you have to use another protocol for playback (usually HLS/DASH). With WHIP and WHEP you can use WebRTC for both,
-            which means fewer moving parts to run.
-          </p>
-
-          <h4>Cheaper to run/no transcoding</h4>
-          <p>
-            A WebRTC server just forwards media packets instead of transcoding the stream. It's a lot easier to deploy/manage/scale because of this.
-          </p>
-        </article>
-
         <article id="codec-flexibility">
-          <h3>Codec flexibility</h3>
+          <h3>Higher Quality</h3>
           <p>
             WebRTC does not hardcode video codecs into the protocol. Codecs are negotiated at runtime so other codecs (like HEVC and AV1) can be trivially added.
+            AV1 is designed to deliver about 30% better quality at the same bitrate, so a 6 Mbps stream can look noticeably better without requiring more upload bandwidth.
             Custom codecs could also be added if both client/server supported so you can do custom things if you need.
           </p>
         </article>
 
-        <article id="e2e-encryption">
-          <h3>End-to-end encryption</h3>
-          <p>
-            WebRTC provides APIs that lets broadcasters encrypt media and viewers decrypt it so the server has no access to the video. The server can support
-            all different types of clients thanks to simulcast.
-          </p>
-
-          <pre class="mermaid">
-            flowchart LR
-                Broadcaster[Broadcaster]
-                Server[WebRTC Server]
-                ViewerA[Viewer A]
-                ViewerB[Viewer B]
-
-                Broadcaster &lt;--&gt;|P2P key exchange| ViewerA
-                Broadcaster &lt;--&gt;|P2P key exchange| ViewerB
-                Broadcaster -->|Encrypted media| Server
-                Server -->|Encrypted media| ViewerA
-                Server -->|Encrypted media| ViewerB
-          </pre>
-        </article>
       </section>
 
       <section class="try-it" aria-labelledby="try-it-now">
