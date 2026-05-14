@@ -76,11 +76,32 @@ const renderNerdModeDiagrams = async () => {
   await renderMermaidDiagrams(diagrams)
 }
 
+const getVisibleElement = () => {
+  const elements = Array.from(document.querySelectorAll('h3, h4, p, article'))
+  return elements.find((el) => {
+    const rect = el.getBoundingClientRect()
+    return rect.top > 0 && rect.top < window.innerHeight / 2
+  })
+}
+
 const updateNerdMode = async () => {
   const isEnabled = nerdModeToggle.checked
+  const anchor = getVisibleElement()
+  const offset = anchor ? anchor.getBoundingClientRect().top : 0
+
   setNerdMode(isEnabled)
+
+  if (anchor) {
+    const newRect = anchor.getBoundingClientRect()
+    window.scrollBy(0, newRect.top - offset)
+  }
+
   if (isEnabled) {
     await renderNerdModeDiagrams()
+    if (anchor) {
+      const newRect = anchor.getBoundingClientRect()
+      window.scrollBy(0, newRect.top - offset)
+    }
   }
 }
 
