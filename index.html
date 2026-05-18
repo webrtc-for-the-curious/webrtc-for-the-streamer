@@ -148,64 +148,23 @@
             A WebRTC server just forwards media packets instead of transcoding the stream. It's a lot easier to deploy/manage/scale because of this.
           </p>
 
+          <h4>Flexible topologies (P2P and Mesh)</h4>
+          <p>
+            WebRTC isn't limited to client-server. You can connect viewers directly (P2P) or in a Mesh. This makes self-hosting easier and cheaper since you don't always need a powerful central server to distribute media.
+          </p>
 
           <div class="nerd-mode">
-            <h4>Simulcast</h4>
-            <p>
-            When streaming video you will need to support different types of users. A phone on 5G works best with 1080p while a
-            desktop computer on fiber can support 2160p. With simulcast the broadcaster generates and uploads all quality levels.
-            The server then forwards the video feeds appropriately.
-            </p>
             <pre class="mermaid nerd-mode">
-            flowchart LR
-                A[OBS/FFmpeg]
-                B[Server]
-                C[Viewer]
-                D[Viewer]
-                E[Viewer]
-                A --> |2160p|B
-                A --> |1440p|B
-                A --> |1080p|B
-                B --> |2160p|C
-                B --> |1440p|D
-                B --> |1080p|E
-
-            linkStyle 0,3 stroke: red
-            linkStyle 1,4 stroke: green
-            linkStyle 2,5 stroke: blue
+            graph LR
+                A[OBS] --> B[Browser]
             </pre>
-            <p>
-            Traditionally with broadcast software you would upload the 2160p feed, and the server would transcode
-            down to the other layers. WebRTC's approach to this problem has a few benefits.
-            </p>
-
-            <h4>Better quality</h4>
-            <p>
-            A 1080p video stream generated via transcoding will not have the same quality as one generated in OBS directly. Transcoding suffers from generational loss.
-            When video is decoded and re-encoded additional compression artifacts and loss of detail will happen. With simulcast you only encode once.
-            </p>
-
-            <h4>More control</h4>
-            <p>
-            When doing transcodes you only control the encoding quality of one stream. With simulcast you can ensure all your video streams are high quality.
-            </p>
-
-            <h4>Lower latency</h4>
-            <p>
-            Transcoding adds additional latency. Running an additional decode + encode for your transcoded feeds means they will have a different latency than your
-            uploaded feed. With simulcast all your feeds run at the same latency.
-            </p>
-
-            <h4>Simpler servers</h4>
-            <p>
-            Running servers without transcoding is much easier. Transcoding requires a lot of computing power, while simulcast just means extra upload traffic.
-            </p>
-
-            <h4>No tampering/ad insertion</h4>
-            <p>
-            Simulcast means you pass through video feeds untampered. If the server is re-encoding your video it can insert watermarks/ads or modify the video in unexpected ways.
-            With E2E encryption broadcasters can even have it that the server can't even decode your video. They will see a stream of bytes pass through, but will not actually be able to watch the video.
-            </p>
+            <pre class="mermaid nerd-mode">
+            graph LR
+                A[OBS] --> B[User A]
+                B --> C[User B]
+                B --> D[User C]
+                D --> E[User E]
+            </pre>
           </div>
         </article>
 
@@ -338,6 +297,65 @@
             AV1 is designed to deliver about 30% better quality at the same bitrate, so a 6 Mbps stream can look noticeably better without requiring more upload bandwidth.
             Custom codecs could also be added if both client/server supported so you can do custom things if you need.
           </p>
+
+          <div class="nerd-mode">
+            <h3>Simulcast</h3>
+            <p>
+            When streaming video you will need to support different types of users. A phone on 5G works best with 1080p while a
+            desktop computer on fiber can support 2160p. With simulcast the broadcaster generates and uploads all quality levels.
+            The server then forwards the video feeds appropriately.
+            </p>
+            <pre class="mermaid nerd-mode">
+            flowchart LR
+                A[OBS/FFmpeg]
+                B[Server]
+                C[Viewer]
+                D[Viewer]
+                E[Viewer]
+                A --> |2160p|B
+                A --> |1440p|B
+                A --> |1080p|B
+                B --> |2160p|C
+                B --> |1440p|D
+                B --> |1080p|E
+
+            linkStyle 0,3 stroke: red
+            linkStyle 1,4 stroke: green
+            linkStyle 2,5 stroke: blue
+            </pre>
+            <p>
+            Traditionally with broadcast software you would upload the 2160p feed, and the server would transcode
+            down to the other layers. WebRTC's approach to this problem has a few benefits.
+            </p>
+
+            <h4>Better quality</h4>
+            <p>
+            A 1080p video stream generated via transcoding will not have the same quality as one generated in OBS directly. Transcoding suffers from generational loss.
+            When video is decoded and re-encoded additional compression artifacts and loss of detail will happen. With simulcast you only encode once.
+            </p>
+
+            <h4>More control</h4>
+            <p>
+            When doing transcodes you only control the encoding quality of one stream. With simulcast you can ensure all your video streams are high quality.
+            </p>
+
+            <h4>Lower latency</h4>
+            <p>
+            Transcoding adds additional latency. Running an additional decode + encode for your transcoded feeds means they will have a different latency than your
+            uploaded feed. With simulcast all your feeds run at the same latency.
+            </p>
+
+            <h4>Simpler servers</h4>
+            <p>
+            Running servers without transcoding is much easier. Transcoding requires a lot of computing power, while simulcast just means extra upload traffic.
+            </p>
+
+            <h4>No tampering/ad insertion</h4>
+            <p>
+            Simulcast means you pass through video feeds untampered. If the server is re-encoding your video it can insert watermarks/ads or modify the video in unexpected ways.
+            With E2E encryption broadcasters can even have it that the server can't even decode your video. They will see a stream of bytes pass through, but will not actually be able to watch the video.
+            </p>
+          </div>
         </article>
 
       </section>
