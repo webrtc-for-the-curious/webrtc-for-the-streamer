@@ -1,8 +1,6 @@
 import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.esm.min.mjs'
 
-const broadcastBoxURL = 'https://b.siobud.com'
-const whipURL = `${broadcastBoxURL}/api/whip`
-const whepURL = `${broadcastBoxURL}/api/whep`
+window.broadcastBoxURL = 'https://b.siobud.com'
 const browserTab = document.getElementById('try-browser-tab')
 const obsTab = document.getElementById('try-obs-tab')
 const browserPanel = document.getElementById('try-browser-panel')
@@ -209,7 +207,7 @@ const publishFromBrowser = async (source) => {
     const offer = await currentConnection.createOffer()
     await currentConnection.setLocalDescription(offer)
 
-    const response = await fetch(whipURL, {
+    const response = await fetch(`${window.broadcastBoxURL}/api/whip`, {
       method: 'POST',
       body: offer.sdp,
       headers: {
@@ -224,7 +222,7 @@ const publishFromBrowser = async (source) => {
 
     const sessionLocation = response.headers.get('Location')
     if (sessionLocation) {
-      publishSessionURL = new URL(sessionLocation, broadcastBoxURL).toString()
+      publishSessionURL = new URL(sessionLocation, window.broadcastBoxURL).toString()
     }
 
     const answer = await response.text()
@@ -274,7 +272,7 @@ const watchStream = async () => {
     const offer = await currentConnection.createOffer()
     await currentConnection.setLocalDescription(offer)
 
-    const response = await fetch(whepURL, {
+    const response = await fetch(`${currentBroadcastBoxURL}/api/whep`, {
       method: 'POST',
       body: offer.sdp,
       headers: {
