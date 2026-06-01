@@ -272,7 +272,7 @@ const watchStream = async () => {
     const offer = await currentConnection.createOffer()
     await currentConnection.setLocalDescription(offer)
 
-    const response = await fetch(`${currentBroadcastBoxURL}/api/whep`, {
+    const response = await fetch(`${window.broadcastBoxURL}/api/whep`, {
       method: 'POST',
       body: offer.sdp,
       headers: {
