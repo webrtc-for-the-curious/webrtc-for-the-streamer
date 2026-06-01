@@ -194,6 +194,25 @@ li + li {
   font-size: 0.96rem;
 }
 
+.source-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.source-link:hover,
+.source-link:focus {
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+.source-link-icon {
+  flex: none;
+  vertical-align: text-bottom;
+}
+
 .intro-cta {
   margin-top: 8px;
   margin-bottom: 0;
